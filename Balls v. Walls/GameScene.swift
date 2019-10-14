@@ -79,7 +79,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
         
         
-        
         colors.shuffle()
         for i in 0...3 {
             let section = SKShapeNode(rect: sectionRect)
@@ -87,8 +86,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             section.strokeColor = colors[i]
             section.fillColor = section.strokeColor
-            
-            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height * 2))
+            // Move the physics body to match up with the wall section
+            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height * 2), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height))
             section.physicsBody?.isDynamic = false
             
             if section.strokeColor == UIColor.red {
@@ -101,7 +100,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             section.position = CGPoint(x: xPosition, y: sectionRect.size.height * CGFloat(i) + 51)
             section.run(moveSequence)
         }
-        
     }
     
     func startWall() {
