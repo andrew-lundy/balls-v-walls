@@ -61,14 +61,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.restitution = 0.6
         ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
-        ball.physicsBody?.collisionBitMask = CollisionTypes.wall.rawValue | CollisionTypes.ground.rawValue
+        ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue
         
-        
-//        ball.physicsBody?.contactTestBitMask = ball.physicsBody!.collisionBitMask
-//        ball.physicsBody?.categoryBitMask = 4
-//        ball.physicsBody?.collisionBitMask = 4
         ball.physicsBody?.isDynamic = true
-     
     }
    
     
@@ -95,34 +90,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
         
       
-        
         colors.shuffle()
         for i in 0...3 {
             let section = SKShapeNode(rect: sectionRect)
+            
             section.position = CGPoint(x: xPosition, y: sectionRect.size.height * CGFloat(i) + 51)
-            section.name = "wall"
             section.strokeColor = colors[i]
             section.fillColor = section.strokeColor
-            // Move the physics body to match up with the wall section
-            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height * 2), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height))
-            section.physicsBody?.isDynamic = false
-    
+
             section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
-            section.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
-            section.physicsBody?.collisionBitMask = 0
+            section.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
+          
             
             if section.fillColor == ball.fillColor {
                 section.name = "scoreDetect"
+                section.physicsBody?.collisionBitMask = 0
+            } else if section.fillColor != ball.fillColor {
+                section.name = "wall"
+                section.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
             }
             
-            addChild(section)
+            // Move the physics body to match up with the wall section
+            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height * 2), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height))
+            section.physicsBody?.isDynamic = false
             
+            addChild(section)
             section.run(moveSequence)
         }
-        
-       
-        
-        
     }
     
     func startWall() {
@@ -148,11 +142,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func ballCollided(with node: SKNode) {
-        if node.name == "wall" {
-            print("PLAYER HIT WALL")
-        } else if node.name == "scoreDetect" {
+        if node.name == "scoreDetect" {
             print("PLAYER SCORED")
             score += 1
+        } else if node.name == "wall" {
+            print("PLAYER HIT WALL")
         }
     }
     
@@ -165,18 +159,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if nodeB == ball {
             ballCollided(with: nodeA)
         }
-        
-//        if contact.bodyA.node?.name == "scoreDetect" || contact.bodyB.node?.name == "scoreDetect" {
-//            if contact.bodyA.node == ball {
-//
-//                print("CONTACT MADE")
-//            } else {
-//
-//                print("CONTACT MADE")
-//            }
-//            score += 1
-//        }
-        
     }
     
 }
