@@ -14,6 +14,7 @@
 		2648E850235199C600690155 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2648E84E235199C600690155 /* Main.storyboard */; };
 		2648E852235199C900690155 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2648E851235199C900690155 /* Assets.xcassets */; };
 		2648E855235199C900690155 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2648E853235199C900690155 /* LaunchScreen.storyboard */; };
+		26CAECEA23693C510052AD63 /* PressStart2P.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26CAECE923693C510052AD63 /* PressStart2P.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		2648E851235199C900690155 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2648E854235199C900690155 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2648E856235199C900690155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26CAECE923693C510052AD63 /* PressStart2P.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PressStart2P.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				2648E851235199C900690155 /* Assets.xcassets */,
 				2648E853235199C900690155 /* LaunchScreen.storyboard */,
 				2648E856235199C900690155 /* Info.plist */,
+				26CAECE923693C510052AD63 /* PressStart2P.ttf */,
 			);
 			path = "Balls v. Walls";
 			sourceTree = "<group>";
@@ -128,6 +131,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26CAECEA23693C510052AD63 /* PressStart2P.ttf in Resources */,
 				2648E850235199C600690155 /* Main.storyboard in Resources */,
 				2648E847235199C600690155 /* GameScene.sks in Resources */,
 				2648E852235199C900690155 /* Assets.xcassets in Resources */,

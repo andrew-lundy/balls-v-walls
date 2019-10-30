@@ -9,6 +9,13 @@
 import SpriteKit
 import GameplayKit
 
+
+enum GameState {
+    case playing
+    case mainMenu
+    case gameOver 
+}
+
 enum CollisionTypes: UInt32 {
     case ball = 1
     case wall = 2
@@ -16,11 +23,17 @@ enum CollisionTypes: UInt32 {
     case scoreDetect = 8
 }
 
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var ball: SKShapeNode!
-    var colors: [UIColor] = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
+    var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
+    var playButton: SKSpriteNode!
+    var footer: SKLabelNode!
+    var gameTitle: SKLabelNode!
+    
+    var gameState = GameState.mainMenu
     
     var score = 0 {
         didSet {
@@ -33,8 +46,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         createBall()
         createGround()
-        startWall()
-        createScore()
+        createMainMenu()
+    }
+    
+    func createMainMenu() {
+        playButton = SKSpriteNode(imageNamed: "Main_Menu_Play")
+        playButton.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+        playButton.scale(to: CGSize(width: playButton.frame.width / 2, height: playButton.frame.height / 2))
+        playButton.name = "playButton"
+        addChild(playButton)
+        
+        footer = SKLabelNode(fontNamed: "AvenirNext-UltraLightItalic")
+        footer.position = CGPoint(x: 10, y: 17)
+        footer.zPosition = 6
+        footer.horizontalAlignmentMode = .left
+        footer.text = "Designed and developed by Andrew Lundy"
+        footer.fontColor = .black
+        addChild(footer)
+        
+        gameTitle = SKLabelNode(fontNamed: "PressStart2P")
+        gameTitle.position = CGPoint(x: frame.width / 2, y: frame.maxY - 250)
+        gameTitle.fontSize = 40
+        gameTitle.text = "Balls v. Walls"
+        addChild(gameTitle)
     }
     
     func createScore() {
@@ -52,8 +86,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         path.addArc(center: CGPoint.zero, radius: 50, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
         ball = SKShapeNode(path: path)
         ball.zPosition = -50
-        ball.fillColor = .red
-        ball.strokeColor = .red
+        ball.fillColor = colors.randomElement() ?? UIColor.red
+        ball.strokeColor = ball.fillColor
         ball.position = CGPoint(x: frame.width / 8, y: 500)
         addChild(ball)
         
@@ -61,7 +95,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.restitution = 0.6
         ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
-        ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue
+        ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
         
         ball.physicsBody?.isDynamic = true
     }
@@ -98,22 +132,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             section.strokeColor = colors[i]
             section.fillColor = section.strokeColor
 
-            section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
+            // Move the physics body to match up with the wall section
+            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height / 2))
+            section.physicsBody?.isDynamic = false
+            
             section.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
-          
             
             if section.fillColor == ball.fillColor {
                 section.name = "scoreDetect"
                 section.physicsBody?.collisionBitMask = 0
+                section.physicsBody?.categoryBitMask = 0
             } else if section.fillColor != ball.fillColor {
                 section.name = "wall"
                 section.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
+                section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
             }
-            
-            // Move the physics body to match up with the wall section
-            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height * 2), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height))
-            section.physicsBody?.isDynamic = false
-            
             addChild(section)
             section.run(moveSequence)
         }
@@ -130,11 +163,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         run(repeatForever)
     }
     
+    func endGame() {
+        speed = 0
+        ball.removeFromParent()
+    }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        let touchedNodes = nodes(at: location)
+        
+        switch gameState {
+        case .mainMenu:
+            for node in touchedNodes {
+                if node.name == "playButton" {
+                    gameState = .playing
+                    
+                    let fadeOut = SKAction.fadeOut(withDuration: 1)
+                    let remove = SKAction.removeFromParent()
+                    let wait = SKAction.wait(forDuration: 0.5)
+                    
+                    let sequence = SKAction.sequence([fadeOut, remove, wait])
+
+                    playButton.run(sequence)
+                    gameTitle.run(sequence)
+                    footer.run(sequence)
+                    
+                    let activatePlayer = SKAction.run {
+                        self.startWall()
+                        self.createScore()
+                    }
+                    
+                    run(activatePlayer)
+                    
+                    print("Play Button tapped")
+                }
+            }
+        case .playing:
+            ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+            print("playing")
+        case .gameOver:
+            print("Game over")
+        }
+        
+       
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -145,8 +219,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if node.name == "scoreDetect" {
             print("PLAYER SCORED")
             score += 1
+            ball.fillColor = colors.randomElement() ?? UIColor.red
         } else if node.name == "wall" {
             print("PLAYER HIT WALL")
+            endGame()
         }
     }
     
