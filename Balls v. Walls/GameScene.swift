@@ -112,7 +112,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButton.position = CGPoint(x: frame.maxX - 50, y: frame.minY + 110)
         pauseButton.size = CGSize(width: pauseButton.size.width * 0.08, height: pauseButton.size.height * 0.08)
         pauseButton.zPosition = 11
+        pauseButton.alpha = 0
         pauseButton.name = "pauseButton"
+        pauseButton.run(SKAction.fadeIn(withDuration: 1))
         addChild(pauseButton)
         
         touchArea = SKSpriteNode(color: .clear, size: CGSize(width: frame.width * 2, height: frame.height * 2))
@@ -120,7 +122,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         touchArea.alpha = 0
         touchArea.name = "touchArea"
         touchArea.zPosition = 10
-        touchArea.run(SKAction.fadeIn(withDuration: 1))
         addChild(touchArea)
         
     }
