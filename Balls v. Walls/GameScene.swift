@@ -9,6 +9,8 @@
 import SpriteKit
 import GameplayKit
 
+// GAME DESIGN NOTES:
+// zPosition must stay between -10 and 10. Unless the node MUST be above/below all else, 11/-11 can be used respectively
 
 enum GameState {
     case playing
@@ -30,16 +32,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
     var playButton: SKSpriteNode!
+    var pauseButton: SKSpriteNode!
+    var resumePlayingButton: SKSpriteNode!
+    
+    var touchArea: SKSpriteNode!
+    
     var footer: SKLabelNode!
     var gameTitle: SKLabelNode!
+    var gameOverTitle: SKLabelNode!
     
     var gameState = GameState.mainMenu
+    
+    var bounce: SKAction!
     
     var score = 0 {
         didSet {
             scoreLabel.text = "Points: \(score)"
         }
     }
+    let mainFont = "PressStart2P"
     
     
     override func didMove(to view: SKView) {
@@ -49,54 +60,86 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createMainMenu()
     }
     
+    func bounce(node: SKSpriteNode) {
+        let moveUp = SKAction.moveBy(x: 0, y: 10, duration: 0.3)
+        let moveDown = SKAction.moveBy(x: 0, y: -10, duration: 0.3)
+        let scaleActionSequence = SKAction.sequence([moveUp, moveDown])
+        let repeatAction = SKAction.repeatForever(scaleActionSequence)
+        node.run(repeatAction)
+    }
+    
+    
+    
     func createMainMenu() {
         playButton = SKSpriteNode(imageNamed: "Main_Menu_Play")
         playButton.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
         playButton.scale(to: CGSize(width: playButton.frame.width / 2, height: playButton.frame.height / 2))
         playButton.name = "playButton"
+        bounce(node: playButton)
         addChild(playButton)
         
         footer = SKLabelNode(fontNamed: "AvenirNext-UltraLightItalic")
         footer.position = CGPoint(x: 10, y: 17)
-        footer.zPosition = 6
+        footer.zPosition = 2
         footer.horizontalAlignmentMode = .left
         footer.text = "Designed and developed by Andrew Lundy"
         footer.fontColor = .black
         addChild(footer)
         
-        gameTitle = SKLabelNode(fontNamed: "PressStart2P")
+        gameTitle = SKLabelNode(fontNamed: mainFont)
         gameTitle.position = CGPoint(x: frame.width / 2, y: frame.maxY - 250)
         gameTitle.fontSize = 40
         gameTitle.text = "Balls v. Walls"
         addChild(gameTitle)
     }
     
-    func createScore() {
-        scoreLabel = SKLabelNode(fontNamed: "Courier-Bold")
+    func createGameOverMenu() {
+        gameOverTitle = SKLabelNode(fontNamed: mainFont)
+    }
+    
+    func createPlayingHUD() {
+        scoreLabel = SKLabelNode(fontNamed: mainFont)
         scoreLabel.text = "Points: 0"
         scoreLabel.fontColor = .white
         scoreLabel.fontSize = 32
-        scoreLabel.zPosition = 30
-        scoreLabel.position = CGPoint(x: frame.midX, y: frame.height - 50)
+        scoreLabel.zPosition = 11
+        scoreLabel.position = CGPoint(x: frame.midX, y: frame.height - 125)
+        scoreLabel.alpha = 0
+        scoreLabel.run(SKAction.fadeIn(withDuration: 1))
         addChild(scoreLabel)
+        
+        pauseButton = SKSpriteNode(imageNamed: "Pause_Button")
+        pauseButton.position = CGPoint(x: frame.maxX - 50, y: frame.minY + 110)
+        pauseButton.size = CGSize(width: pauseButton.size.width * 0.08, height: pauseButton.size.height * 0.08)
+        pauseButton.zPosition = 11
+        pauseButton.name = "pauseButton"
+        addChild(pauseButton)
+        
+        touchArea = SKSpriteNode(color: .clear, size: CGSize(width: frame.width * 2, height: frame.height * 2))
+        touchArea.position = CGPoint(x: 0, y: 0)
+        touchArea.alpha = 0
+        touchArea.name = "touchArea"
+        touchArea.zPosition = 10
+        touchArea.run(SKAction.fadeIn(withDuration: 1))
+        addChild(touchArea)
+        
     }
     
     func createBall() {
         let path = CGMutablePath()
         path.addArc(center: CGPoint.zero, radius: 50, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
         ball = SKShapeNode(path: path)
-        ball.zPosition = -50
+        ball.zPosition = -10
         ball.fillColor = colors.randomElement() ?? UIColor.red
         ball.strokeColor = ball.fillColor
         ball.position = CGPoint(x: frame.width / 8, y: 500)
         addChild(ball)
         
         ball.physicsBody = SKPhysicsBody(circleOfRadius: 50)
-        ball.physicsBody?.restitution = 0.6
         ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
         ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
-        
+        ball.physicsBody?.restitution = 0.9
         ball.physicsBody?.isDynamic = true
     }
    
@@ -104,9 +147,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func createGround() {
         let groundRect = CGRect(x: 0, y: 0, width: frame.width, height: 50)
         let ground = SKShapeNode(rect: groundRect)
-        ground.zPosition = 5
-        ground.fillColor = .white
-        ground.strokeColor = .white
+        ground.zPosition = 1
+        ground.fillColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
+        ground.strokeColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
         addChild(ground)
         
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: groundRect.width * 2, height: groundRect.height * 2))
@@ -157,7 +200,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.createWall()
         }
         
-        let wait = SKAction.wait(forDuration: 1.5)
+        let wait = SKAction.wait(forDuration: 2)
         let moveSequence = SKAction.sequence([wait, create, wait])
         let repeatForever = SKAction.repeatForever(moveSequence)
         run(repeatForever)
@@ -166,6 +209,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func endGame() {
         speed = 0
         ball.removeFromParent()
+    }
+    
+    func pauseGame() {
+        speed = 0
     }
     
     
@@ -180,7 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if node.name == "playButton" {
                     gameState = .playing
                     
-                    let fadeOut = SKAction.fadeOut(withDuration: 1)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.8)
                     let remove = SKAction.removeFromParent()
                     let wait = SKAction.wait(forDuration: 0.5)
                     
@@ -192,18 +239,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                     let activatePlayer = SKAction.run {
                         self.startWall()
-                        self.createScore()
+                        self.createPlayingHUD()
                     }
-                    
                     run(activatePlayer)
-                    
-                    print("Play Button tapped")
                 }
             }
+            
         case .playing:
-            ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-            ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
-            print("playing")
+            for node in touchedNodes {
+                if node.name == "touchArea" {
+                    ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                    ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+                } else if node.name == "pauseButton" {
+                    speed = 0
+                    ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                    ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 0))
+                    ball.physicsBody?.isDynamic = false
+                    print("PAUSE PRESSED")
+                }
+            }
+
         case .gameOver:
             print("Game over")
         }
@@ -212,7 +267,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(_ currentTime: TimeInterval) {
-
+      
     }
     
     func ballCollided(with node: SKNode) {
