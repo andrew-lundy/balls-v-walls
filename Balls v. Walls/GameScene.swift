@@ -15,7 +15,8 @@ import GameplayKit
 enum GameState {
     case playing
     case mainMenu
-    case gameOver 
+    case gameOver
+    case paused
 }
 
 enum CollisionTypes: UInt32 {
@@ -119,7 +120,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         touchArea = SKSpriteNode(color: .clear, size: CGSize(width: frame.width * 2, height: frame.height * 2))
         touchArea.position = CGPoint(x: 0, y: 0)
-        touchArea.alpha = 0
+        touchArea.alpha = 0.1
+        
         touchArea.name = "touchArea"
         touchArea.zPosition = 10
         addChild(touchArea)
@@ -140,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
         ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
-        ball.physicsBody?.restitution = 0.9
+        ball.physicsBody?.restitution = 0.8
         ball.physicsBody?.isDynamic = true
     }
    
@@ -213,7 +215,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func pauseGame() {
-        speed = 0
+        gameState = .paused
+        
+        
     }
     
     
@@ -252,17 +256,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                 } else if node.name == "pauseButton" {
-                    speed = 0
+                    gameState = .paused
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 0))
                     ball.physicsBody?.isDynamic = false
+                    pauseButton.alpha = 0
                     print("PAUSE PRESSED")
+                    resumePlayingButton = SKSpriteNode(imageNamed: "Play_Button")
+                    resumePlayingButton.position = pauseButton.position
+                    resumePlayingButton.size = CGSize(width: resumePlayingButton.size.width * 0.08, height: resumePlayingButton.size.height * 0.08)
+                    speed = 0 
+                    addChild(resumePlayingButton)
                 }
             }
 
         case .gameOver:
             print("Game over")
+            
+        case .paused:
+            print("game paused")
+            
         }
+        
+        
         
        
     }
