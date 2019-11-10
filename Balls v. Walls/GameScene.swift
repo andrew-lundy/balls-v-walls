@@ -32,10 +32,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ball: SKShapeNode!
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
+    var gamePausedLabel: SKLabelNode!
+    
     var playButton: SKSpriteNode!
     var pauseButton: SKSpriteNode!
     var resumePlayingButton: SKSpriteNode!
-    
     var touchArea: SKSpriteNode!
     
     var footer: SKLabelNode!
@@ -43,6 +44,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameOverTitle: SKLabelNode!
     
     var gameState = GameState.mainMenu
+    
+
     
     var bounce: SKAction!
     
@@ -79,7 +82,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bounce(node: playButton)
         addChild(playButton)
         
-        footer = SKLabelNode(fontNamed: "AvenirNext-UltraLightItalic")
+        footer = SKLabelNode(fontNamed: mainFont)
+        footer.fontSize = 18
         footer.position = CGPoint(x: 10, y: 17)
         footer.zPosition = 2
         footer.horizontalAlignmentMode = .left
@@ -173,7 +177,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         colors.shuffle()
         for i in 0...3 {
             let section = SKShapeNode(rect: sectionRect)
-            
+           
+            section.isPaused = false
             section.position = CGPoint(x: xPosition, y: sectionRect.size.height * CGFloat(i) + 51)
             section.strokeColor = colors[i]
             section.fillColor = section.strokeColor
@@ -209,6 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         run(repeatForever)
     }
     
+    
     func endGame() {
         speed = 0
         ball.removeFromParent()
@@ -235,7 +241,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     let fadeOut = SKAction.fadeOut(withDuration: 0.8)
                     let remove = SKAction.removeFromParent()
                     let wait = SKAction.wait(forDuration: 0.5)
-                    
                     let sequence = SKAction.sequence([fadeOut, remove, wait])
 
                     playButton.run(sequence)
@@ -247,6 +252,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         self.createPlayingHUD()
                     }
                     run(activatePlayer)
+
+                    
                 }
             }
             
@@ -256,17 +263,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                 } else if node.name == "pauseButton" {
+                    print("PAUSE BUTTON PRESSED")
+//                    speed = 0
+                    scene?.isPaused = true
                     gameState = .paused
-                    ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-                    ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 0))
+//                    ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+//                    ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 0))
                     ball.physicsBody?.isDynamic = false
+                    
                     pauseButton.alpha = 0
-                    print("PAUSE PRESSED")
                     resumePlayingButton = SKSpriteNode(imageNamed: "Play_Button")
                     resumePlayingButton.position = pauseButton.position
                     resumePlayingButton.size = CGSize(width: resumePlayingButton.size.width * 0.08, height: resumePlayingButton.size.height * 0.08)
-                    speed = 0 
+                    
+                    resumePlayingButton.name = "resumePlayButton"
                     addChild(resumePlayingButton)
+                    
+                    gamePausedLabel = SKLabelNode(fontNamed: mainFont)
+                    gamePausedLabel.fontSize = 50
+                    gamePausedLabel.text = "PAUSED"
+                    gamePausedLabel.alpha = 1
+                    gamePausedLabel.zPosition = 10
+                    gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+                    addChild(gamePausedLabel)
+
+                    print("STATE: PAUSED")
                 }
             }
 
@@ -274,14 +295,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print("Game over")
             
         case .paused:
-            print("game paused")
+            print("STATE: PLAYING")
+            for node in touchedNodes {
+                if node.name == "resumePlayButton" {
+                    print("RESUME PLAYING TAPPED")
+                    
+                    gameState = .playing
+                                
+                    ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                    ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+                    
+                    
+                    
+    
+                    let wait = SKAction.wait(forDuration: 3)
+                    let fade = SKAction.fadeOut(withDuration: 1)
+                
+                    let engageBall = SKAction.run {
+                        self.ball.physicsBody?.isDynamic = true
+                    }
+                    
+                    let unPauseScene = SKAction.run {
+                        self.scene?.isPaused = false
+                    }
+                    
+                    let engageBallSequence = SKAction.sequence([wait, engageBall])
+                    
+                                    
+//                    scene?.run(SKAction.sequence([unPauseScene, wait]))
             
+                    scene?.isPaused = false
+                    scene?.run(wait)
+                    
+                    ball.run(engageBallSequence)
+                    gamePausedLabel.run(fade)
+                    
+                }
+            }
         }
-        
-        
-        
-       
     }
+       
     
     override func update(_ currentTime: TimeInterval) {
       
