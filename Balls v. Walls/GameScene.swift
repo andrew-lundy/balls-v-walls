@@ -170,47 +170,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
     func createMainWall() {
         let wall = Wall()
-        wall.createWall(with: ball)
+        wall.createWall(with: ball, frame: frame)
         addChild(wall)
     }
     
-    
-//    func createWall() {
-//        let xPosition = frame.maxX + 15
-//        let sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
-//        let endPosition = frame.width + (sectionRect.width * 2)
-//        let moveAction = SKAction.moveTo(x: -endPosition, duration: 5)
-//        let moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
-//
-//
-//        colors.shuffle()
-//        for i in 0...3 {
-//            let section = SKShapeNode(rect: sectionRect)
-//
-//            section.isPaused = false
-//            section.position = CGPoint(x: xPosition, y: sectionRect.size.height * CGFloat(i) + 51)
-//            section.strokeColor = colors[i]
-//            section.fillColor = section.strokeColor
-//
-//            // Move the physics body to match up with the wall section
-//            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height / 2))
-//            section.physicsBody?.isDynamic = false
-//
-//            section.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
-//
-//            if section.fillColor == ball.fillColor {
-//                section.name = "scoreDetect"
-//                section.physicsBody?.collisionBitMask = 0
-//                section.physicsBody?.categoryBitMask = 0
-//            } else if section.fillColor != ball.fillColor {
-//                section.name = "wall"
-//                section.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
-//                section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
-//            }
-//            addChild(section)
-//            section.run(moveSequence)
-//        }
-//    }
     
     func startWall() {
         let create = SKAction.run { [unowned self] in
@@ -231,8 +194,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func pauseGame() {
         gameState = .paused
-        
-        
     }
     
     
@@ -271,11 +232,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                 } else if node.name == "pauseButton" {
                     print("PAUSE BUTTON PRESSED")
-//                    speed = 0
                     scene?.isPaused = true
                     gameState = .paused
-//                    ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-//                    ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 0))
                     ball.physicsBody?.isDynamic = false
                     
                     pauseButton.alpha = 0

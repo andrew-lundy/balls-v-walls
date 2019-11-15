@@ -19,18 +19,9 @@ class Wall: SKNode {
     var endPosition: CGFloat!
     var moveAction: SKAction!
     var moveSequence: SKAction!
+        
     
-    
-    func configureWall() {
-        xPosition = frame.maxX + 15
-        sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
-        endPosition = frame.width + (sectionRect.width * 2)
-        moveAction = SKAction.moveTo(x: -endPosition, duration: 5)
-        moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
-    }
-    
-    
-    func createWall(with ball: SKShapeNode) {
+    func createWall(with ball: SKShapeNode, frame: CGRect) {
         xPosition = frame.maxX + 15
         sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
         endPosition = frame.width + (sectionRect.width * 2)
@@ -66,6 +57,10 @@ class Wall: SKNode {
             section.run(moveSequence)
         }
     }
+    
+    
+    
+    
 }
 
 
