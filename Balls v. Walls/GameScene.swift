@@ -27,6 +27,7 @@ enum CollisionTypes: UInt32 {
 }
 
 
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var ball: SKShapeNode!
@@ -166,46 +167,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody?.isDynamic = false
     }
     
-    func createWall() {
-        let xPosition = frame.maxX + 15
-        let sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
-        let endPosition = frame.width + (sectionRect.width * 2)
-        let moveAction = SKAction.moveTo(x: -endPosition, duration: 5)
-        let moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
-        
-      
-        colors.shuffle()
-        for i in 0...3 {
-            let section = SKShapeNode(rect: sectionRect)
-           
-            section.isPaused = false
-            section.position = CGPoint(x: xPosition, y: sectionRect.size.height * CGFloat(i) + 51)
-            section.strokeColor = colors[i]
-            section.fillColor = section.strokeColor
-
-            // Move the physics body to match up with the wall section
-            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height / 2))
-            section.physicsBody?.isDynamic = false
-            
-            section.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
-            
-            if section.fillColor == ball.fillColor {
-                section.name = "scoreDetect"
-                section.physicsBody?.collisionBitMask = 0
-                section.physicsBody?.categoryBitMask = 0
-            } else if section.fillColor != ball.fillColor {
-                section.name = "wall"
-                section.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
-                section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
-            }
-            addChild(section)
-            section.run(moveSequence)
-        }
+  
+    func createMainWall() {
+        let wall = Wall()
+        wall.createWall(with: ball)
+        addChild(wall)
     }
+    
+    
+//    func createWall() {
+//        let xPosition = frame.maxX + 15
+//        let sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
+//        let endPosition = frame.width + (sectionRect.width * 2)
+//        let moveAction = SKAction.moveTo(x: -endPosition, duration: 5)
+//        let moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
+//
+//
+//        colors.shuffle()
+//        for i in 0...3 {
+//            let section = SKShapeNode(rect: sectionRect)
+//
+//            section.isPaused = false
+//            section.position = CGPoint(x: xPosition, y: sectionRect.size.height * CGFloat(i) + 51)
+//            section.strokeColor = colors[i]
+//            section.fillColor = section.strokeColor
+//
+//            // Move the physics body to match up with the wall section
+//            section.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: sectionRect.width, height: sectionRect.height), center: CGPoint(x: sectionRect.width / 2, y: sectionRect.height / 2))
+//            section.physicsBody?.isDynamic = false
+//
+//            section.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
+//
+//            if section.fillColor == ball.fillColor {
+//                section.name = "scoreDetect"
+//                section.physicsBody?.collisionBitMask = 0
+//                section.physicsBody?.categoryBitMask = 0
+//            } else if section.fillColor != ball.fillColor {
+//                section.name = "wall"
+//                section.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
+//                section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
+//            }
+//            addChild(section)
+//            section.run(moveSequence)
+//        }
+//    }
     
     func startWall() {
         let create = SKAction.run { [unowned self] in
-            self.createWall()
+            self.createMainWall()
         }
         
         let wait = SKAction.wait(forDuration: 2)
@@ -252,8 +261,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         self.createPlayingHUD()
                     }
                     run(activatePlayer)
-
-                    
                 }
             }
             
@@ -301,13 +308,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     print("RESUME PLAYING TAPPED")
                     
                     gameState = .playing
-                                
+                    scene?.isPaused = false
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                     
                     
-                    
-    
                     let wait = SKAction.wait(forDuration: 3)
                     let fade = SKAction.fadeOut(withDuration: 1)
                 
@@ -315,21 +320,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         self.ball.physicsBody?.isDynamic = true
                     }
                     
-                    let unPauseScene = SKAction.run {
-                        self.scene?.isPaused = false
-                    }
+                    resumePlayingButton.run(SKAction.fadeOut(withDuration: 0))
+                    pauseButton.run(SKAction.fadeIn(withDuration: 0))
                     
                     let engageBallSequence = SKAction.sequence([wait, engageBall])
                     
-                                    
-//                    scene?.run(SKAction.sequence([unPauseScene, wait]))
-            
-                    scene?.isPaused = false
-                    scene?.run(wait)
                     
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
-                    
                 }
             }
         }
