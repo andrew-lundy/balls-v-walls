@@ -12,6 +12,7 @@ import SpriteKit
 class Wall: SKNode {
 
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
+    var currentSections = [SKShapeNode]()
     
     var section: SKShapeNode!
     var xPosition: CGFloat!
@@ -58,22 +59,16 @@ class Wall: SKNode {
         }
     }
     
-    func makeWallWait(wall: SKNode) {
-        
+    func stopWall(frame: CGRect) {
+        let stop = SKAction.stop()
         let wait = SKAction.wait(forDuration: 3)
-        let pauseWall = SKAction.run {
-            self.section.speed = 0
-        }
-        
-        let playWall = SKAction.run {
+        let engageWallSpeed = SKAction.run {
             self.section.speed = 1
         }
         
-        let unpauseSequence = SKAction.sequence([wait, pauseWall, wait, playWall])
-        section.run(unpauseSequence)
+        let waitSequence = SKAction.sequence([stop, wait, engageWallSpeed])
+        section.run(waitSequence)
     }
-    
-    
 }
 
 

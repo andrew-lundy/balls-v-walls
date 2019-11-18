@@ -46,7 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var gameState = GameState.mainMenu
     
-    let wall = Wall()
+    
     
     var bounce: SKAction!
     
@@ -170,7 +170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
   
     func createMainWall() {
-        
+        let wall = Wall()
         wall.createWall(with: ball, frame: frame)
         addChild(wall)
     }
@@ -188,14 +188,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
+    func pauseAndResumeMainWall() {
+        let wall = Wall()
+        wall.stopWall(frame: frame)
+    }
+    
+    
     func endGame() {
         speed = 0
         ball.removeFromParent()
     }
     
     func pauseGame() {
+        scene?.isPaused = true
         gameState = .paused
     }
+    
+    
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -233,12 +242,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                 } else if node.name == "pauseButton" {
                     print("PAUSE BUTTON PRESSED")
-                    scene?.isPaused = true
-                    gameState = .paused
+                    
+                    pauseGame()
                     ball.physicsBody?.isDynamic = false
     
-                    
                     pauseButton.alpha = 0
+   
                     resumePlayingButton = SKSpriteNode(imageNamed: "Play_Button")
                     resumePlayingButton.position = pauseButton.position
                     resumePlayingButton.size = CGSize(width: resumePlayingButton.size.width * 0.08, height: resumePlayingButton.size.height * 0.08)
@@ -269,6 +278,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     scene?.isPaused = false
                     gameState = .playing
                     
+                    
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                     
@@ -286,10 +296,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                     let engageBallSequence = SKAction.sequence([wait, engageBall])
                     
+//                    pauseAndResumeMainWall()
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
-                    
-                  
+               
                 }
             }
         }
