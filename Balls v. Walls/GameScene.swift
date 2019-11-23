@@ -60,9 +60,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
+        
         createBall()
         createGround()
         createMainMenu()
+        
+        let wall = Wall()
+        wall.createWall(with: ball, frame: frame)
+        self.addChild(wall)
         
     }
     
@@ -102,6 +107,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createGameOverMenu() {
         gameOverTitle = SKLabelNode(fontNamed: mainFont)
+        gameOverTitle.text = "GAME OVER"
+        gameOverTitle.position = CGPoint(x: frame.midX, y: frame.midY)
+        gameOverTitle.fontSize = 32
+        gameOverTitle.zPosition = 11
+        gameOverTitle.fontColor = .white
+        gameOverTitle.alpha = 0
+        gameOverTitle.run(SKAction.fadeIn(withDuration: 1))
+        addChild(gameOverTitle)
+        
+        
     }
     
     func createPlayingHUD() {
@@ -170,9 +185,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
   
     func createMainWall() {
-        let wall = Wall()
-        wall.createWall(with: ball, frame: frame)
-        addChild(wall)
+//        let wall = Wall()
+//
+        
+//        addChild(wall)
     }
     
     
@@ -195,8 +211,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func endGame() {
-        speed = 0
+        scene?.isPaused = true
+        
+        for child in children {
+            if child.name == "wall" {
+                print(child.name)
+            } else {
+                print(child.name)
+            }
+        }
+        
+        gameState = .gameOver
         ball.removeFromParent()
+        
     }
     
     func pauseGame() {
@@ -242,6 +269,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                 } else if node.name == "pauseButton" {
                     print("PAUSE BUTTON PRESSED")
+                    print("STATE: PAUSED")
                     
                     pauseGame()
                     ball.physicsBody?.isDynamic = false
@@ -263,12 +291,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY)
                     addChild(gamePausedLabel)
 
-                    print("STATE: PAUSED")
+                    
                 }
             }
 
         case .gameOver:
             print("Game over")
+            
+            
             
         case .paused:
             print("STATE: PLAYING")

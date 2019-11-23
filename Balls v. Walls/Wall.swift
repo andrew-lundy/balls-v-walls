@@ -21,13 +21,22 @@ class Wall: SKNode {
     var moveAction: SKAction!
     var moveSequence: SKAction!
         
-    
-    func createWall(with ball: SKShapeNode, frame: CGRect) {
+    override init() {
+        super.init()
         xPosition = frame.maxX + 15
         sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
         endPosition = frame.width + (sectionRect.width * 2)
         moveAction = SKAction.moveTo(x: -endPosition, duration: 5)
         moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func createWall(with ball: SKShapeNode, frame: CGRect) {
+        
         colors.shuffle()
         
         for i in 0...3 {
