@@ -46,7 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var gameState = GameState.mainMenu
     
-    
+    var wall: Wall!
     
     var bounce: SKAction!
     
@@ -64,11 +64,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         createBall()
         createGround()
         createMainMenu()
-        
-        let wall = Wall()
-        wall.createWall(with: ball, frame: frame)
-        self.addChild(wall)
-        
     }
     
     func bounce(node: SKSpriteNode) {
@@ -94,7 +89,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         footer.position = CGPoint(x: 10, y: 17)
         footer.zPosition = 2
         footer.horizontalAlignmentMode = .left
-        footer.text = "Designed and developed by Andrew Lundy"
+        footer.text = "Brought to you by Rusty Nail Games"
         footer.fontColor = .black
         addChild(footer)
         
@@ -185,12 +180,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
   
     func createMainWall() {
-//        let wall = Wall()
-//
-        
-//        addChild(wall)
+        wall = Wall(frame: frame)
+        wall.createWall(with: ball, frame: frame)
+        addChild(wall)
     }
-    
     
     func startWall() {
         let create = SKAction.run { [unowned self] in
@@ -203,24 +196,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         run(repeatForever)
     }
     
-    
-    func pauseAndResumeMainWall() {
-        let wall = Wall()
-        wall.stopWall(frame: frame)
-    }
-    
-    
     func endGame() {
         scene?.isPaused = true
-        
-        for child in children {
-            if child.name == "wall" {
-                print(child.name)
-            } else {
-                print(child.name)
-            }
-        }
-        
         gameState = .gameOver
         ball.removeFromParent()
         
@@ -230,8 +207,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scene?.isPaused = true
         gameState = .paused
     }
-    
-    
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -319,22 +294,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     let engageBall = SKAction.run {
                         self.ball.physicsBody?.isDynamic = true
                     }
-                                        
-                    
+
                     resumePlayingButton.run(SKAction.fadeOut(withDuration: 0))
                     pauseButton.run(SKAction.fadeIn(withDuration: 0))
                     
                     let engageBallSequence = SKAction.sequence([wait, engageBall])
-                    
-//                    pauseAndResumeMainWall()
+                    wall.pauseWall(frame: frame)
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
-               
                 }
             }
         }
     }
-     
+        
     
     override func update(_ currentTime: TimeInterval) {
       

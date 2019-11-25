@@ -20,9 +20,13 @@ class Wall: SKNode {
     var endPosition: CGFloat!
     var moveAction: SKAction!
     var moveSequence: SKAction!
-        
-    override init() {
+  
+    var wallSections = [SKShapeNode]()
+    
+    
+    init(frame: CGRect) {
         super.init()
+      
         xPosition = frame.maxX + 15
         sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
         endPosition = frame.width + (sectionRect.width * 2)
@@ -65,18 +69,25 @@ class Wall: SKNode {
             
             addChild(section)
             section.run(moveSequence)
+            wallSections.append(section)
         }
     }
     
-    func stopWall(frame: CGRect) {
-        let stop = SKAction.stop()
-        let wait = SKAction.wait(forDuration: 3)
-        let engageWallSpeed = SKAction.run {
-            self.section.speed = 1
+    
+    func pauseWall(frame: CGRect) {
+        for child in children {
+            if child.name == "wall" || child.name == "scoreDetect" {
+                child.speed = 0
+                let wait = SKAction.wait(forDuration: 3)
+                let resume = SKAction.run {
+                    child.speed = 1
+                }
+
+                let resumeWall = SKAction.sequence([wait, resume])
+                child.run(resumeWall)
+            }
         }
-        
-        let waitSequence = SKAction.sequence([stop, wait, engageWallSpeed])
-        section.run(waitSequence)
+        print("PAUSE WALL")
     }
 }
 
