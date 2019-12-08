@@ -69,26 +69,47 @@ class Wall: SKNode {
             
             addChild(section)
             section.run(moveSequence)
-            wallSections.append(section)
         }
     }
     
     
-    func pauseWall(frame: CGRect) {
+    func stopWall(with ball: SKShapeNode, frame: CGRect) {
         for child in children {
             if child.name == "wall" || child.name == "scoreDetect" {
-                child.speed = 0
+                child.removeAllActions()
+            }
+        }
+    }
+    
+    func pauseAndResumeWall(with ball: SKShapeNode, frame: CGRect) {
+        for child in children {
+            if child.name == "wall" || child.name == "scoreDetect" {
+                child.removeAllActions()
                 let wait = SKAction.wait(forDuration: 3)
+                
                 let resume = SKAction.run {
-                    child.speed = 1
+                    child.isPaused = false
                 }
-
-                let resumeWall = SKAction.sequence([wait, resume])
+     
+                let remove = SKAction.removeFromParent()
+                let resumeWall = SKAction.sequence([ moveAction, remove])
                 child.run(resumeWall)
+                
+                
             }
         }
         print("PAUSE WALL")
     }
+    
+//    func resetWall(with ball: SKShapeNode, frame: CGRect) {
+//        let wait = SKAction.wait(forDuration: 6)
+//        let createWall = SKAction.run {
+//            self.createWall(with: ball, frame: frame)
+//        }
+//
+//        let resetSequence = SKAction.sequence([wait, createWall])
+//        self.run(resetSequence)
+//    }
 }
 
 

@@ -198,6 +198,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func endGame() {
         scene?.isPaused = true
+        
+        let gameOver = SKLabelNode(fontNamed: mainFont)
+        gameOver.text = "GAME OVER"
+        gameOver.position = CGPoint(x: frame.midX, y: frame.midY)
+        addChild(gameOver)
+        
         gameState = .gameOver
         ball.removeFromParent()
         
@@ -265,7 +271,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     gamePausedLabel.zPosition = 10
                     gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY)
                     addChild(gamePausedLabel)
-
                     
                 }
             }
@@ -298,10 +303,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     resumePlayingButton.run(SKAction.fadeOut(withDuration: 0))
                     pauseButton.run(SKAction.fadeIn(withDuration: 0))
                     
-                    let engageBallSequence = SKAction.sequence([wait, engageBall])
-                    wall.pauseWall(frame: frame)
+                    let engageBallSequence = SKAction.sequence([engageBall])
+                    wall.pauseAndResumeWall(with: ball, frame: frame)
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
+    
+                 
                 }
             }
         }
