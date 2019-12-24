@@ -60,6 +60,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
+        scaleMode = .aspectFill
         
         createBall()
         createGround()
@@ -85,10 +86,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(playButton)
         
         footer = SKLabelNode(fontNamed: mainFont)
-        footer.fontSize = 18
-        footer.position = CGPoint(x: 10, y: 17)
+        footer.fontSize = 17
+        footer.horizontalAlignmentMode = .center
+        footer.position = CGPoint(x: frame.width / 2, y: 17)
         footer.zPosition = 2
-        footer.horizontalAlignmentMode = .left
         footer.text = "Brought to you by Rusty Nail Games"
         footer.fontColor = .black
         addChild(footer)
@@ -101,15 +102,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createGameOverMenu() {
-        gameOverTitle = SKLabelNode(fontNamed: mainFont)
-        gameOverTitle.text = "GAME OVER"
-        gameOverTitle.position = CGPoint(x: frame.midX, y: frame.midY)
-        gameOverTitle.fontSize = 32
-        gameOverTitle.zPosition = 11
-        gameOverTitle.fontColor = .white
-        gameOverTitle.alpha = 0
-        gameOverTitle.run(SKAction.fadeIn(withDuration: 1))
-        addChild(gameOverTitle)
+//        gameOverTitle = SKLabelNode(fontNamed: mainFont)
+//        gameOverTitle.text = "GAME OVER"
+//        gameOverTitle.position = CGPoint(x: frame.midX, y: frame.midY)
+//        gameOverTitle.fontSize = 32
+//        gameOverTitle.zPosition = 11
+//        gameOverTitle.fontColor = .white
+//        gameOverTitle.alpha = 0
+//        gameOverTitle.run(SKAction.fadeIn(withDuration: 1))
+//        addChild(gameOverTitle)
         
         
     }
@@ -126,7 +127,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(scoreLabel)
         
         pauseButton = SKSpriteNode(imageNamed: "Pause_Button")
-        pauseButton.position = CGPoint(x: frame.maxX - 50, y: frame.minY + 110)
+        pauseButton.position = CGPoint(x: frame.maxX - 125, y: frame.minY + 110)
         pauseButton.size = CGSize(width: pauseButton.size.width * 0.08, height: pauseButton.size.height * 0.08)
         pauseButton.zPosition = 11
         pauseButton.alpha = 0
@@ -151,7 +152,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.zPosition = -10
         ball.fillColor = colors.randomElement() ?? UIColor.red
         ball.strokeColor = ball.fillColor
-        ball.position = CGPoint(x: frame.width / 8, y: 500)
+        ball.position = CGPoint(x: frame.width / 6, y: 500)
         addChild(ball)
         
         ball.physicsBody = SKPhysicsBody(circleOfRadius: 50)
@@ -200,9 +201,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scene?.isPaused = true
         
         let gameOver = SKLabelNode(fontNamed: mainFont)
+        gameOver.fontSize = 50
         gameOver.text = "GAME OVER"
+        gameOver.zPosition = 11
         gameOver.position = CGPoint(x: frame.midX, y: frame.midY)
         addChild(gameOver)
+        
+        let dimmer = SKSpriteNode(color: UIColor.black, size: CGSize(width: frame.width * 2, height: frame.height * 2))
+        dimmer.position = CGPoint(x: 0, y: 0)
+        dimmer.alpha = 0.6
+        dimmer.zPosition = 9
+        addChild(dimmer)
         
         gameState = .gameOver
         ball.removeFromParent()
