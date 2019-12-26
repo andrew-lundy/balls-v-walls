@@ -20,14 +20,27 @@ class Wall: SKNode {
     var endPosition: CGFloat!
     var moveAction: SKAction!
     var moveSequence: SKAction!
-        
+  
+    var wallSections = [SKShapeNode]()
     
-    func createWall(with ball: SKShapeNode, frame: CGRect) {
+    
+    init(frame: CGRect) {
+        super.init()
+      
         xPosition = frame.maxX + 15
         sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
         endPosition = frame.width + (sectionRect.width * 2)
         moveAction = SKAction.moveTo(x: -endPosition, duration: 5)
         moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func createWall(with ball: SKShapeNode, frame: CGRect) {
+        
         colors.shuffle()
         
         for i in 0...3 {
@@ -59,16 +72,44 @@ class Wall: SKNode {
         }
     }
     
-    func stopWall(frame: CGRect) {
-        let stop = SKAction.stop()
-        let wait = SKAction.wait(forDuration: 3)
-        let engageWallSpeed = SKAction.run {
-            self.section.speed = 1
+    
+    func stopWall(with ball: SKShapeNode, frame: CGRect) {
+        for child in children {
+            if child.name == "wall" || child.name == "scoreDetect" {
+                child.removeAllActions()
+            }
         }
-        
-        let waitSequence = SKAction.sequence([stop, wait, engageWallSpeed])
-        section.run(waitSequence)
     }
+    
+    func pauseAndResumeWall(with ball: SKShapeNode, frame: CGRect) {
+        for child in children {
+            if child.name == "wall" || child.name == "scoreDetect" {
+                child.removeAllActions()
+                let wait = SKAction.wait(forDuration: 3)
+                
+                let resume = SKAction.run {
+                    child.isPaused = false
+                }
+     
+                let remove = SKAction.removeFromParent()
+                let resumeWall = SKAction.sequence([ moveAction, remove])
+                child.run(resumeWall)
+                
+                
+            }
+        }
+        print("PAUSE WALL")
+    }
+    
+//    func resetWall(with ball: SKShapeNode, frame: CGRect) {
+//        let wait = SKAction.wait(forDuration: 6)
+//        let createWall = SKAction.run {
+//            self.createWall(with: ball, frame: frame)
+//        }
+//
+//        let resetSequence = SKAction.sequence([wait, createWall])
+//        self.run(resetSequence)
+//    }
 }
 
 
