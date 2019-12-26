@@ -36,6 +36,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gamePausedLabel: SKLabelNode!
     
     var playButton: SKSpriteNode!
+    var highScoreLabel: SKLabelNode!
+    
     var pauseButton: SKSpriteNode!
     var resumePlayingButton: SKSpriteNode!
     var touchArea: SKSpriteNode!
@@ -47,8 +49,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameState = GameState.mainMenu
     
     var wall: Wall!
-    
     var bounce: SKAction!
+    
+    let defaults = UserDefaults.standard
+    
+    var highScore: Int!
     
     var score = 0 {
         didSet {
@@ -61,6 +66,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         scaleMode = .aspectFill
+    
+        
+        if let highScore = defaults.object(forKey: "HighScore") as? Int {
+            self.highScore = highScore
+            print("HIGH SCORE: \(highScore)")
+        } else {
+            defaults.set(0, forKey: "HighScore")
+            highScore = 0
+            print("HIGH SCORE NOT FOUND")
+        }
+        
         
         createBall()
         createGround()
@@ -85,6 +101,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bounce(node: playButton)
         addChild(playButton)
         
+        highScoreLabel = SKLabelNode(fontNamed: mainFont)
+        highScoreLabel.fontSize = 19
+        highScoreLabel.text = "Score to Beat: \(highScore!)"
+        highScoreLabel.horizontalAlignmentMode = .center
+        highScoreLabel.position = CGPoint(x: frame.midX, y: playButton.position.y + 150)
+        addChild(highScoreLabel)
+        
         footer = SKLabelNode(fontNamed: mainFont)
         footer.fontSize = 17
         footer.horizontalAlignmentMode = .center
@@ -99,20 +122,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameTitle.fontSize = 40
         gameTitle.text = "Balls v. Walls"
         addChild(gameTitle)
-    }
-    
-    func createGameOverMenu() {
-//        gameOverTitle = SKLabelNode(fontNamed: mainFont)
-//        gameOverTitle.text = "GAME OVER"
-//        gameOverTitle.position = CGPoint(x: frame.midX, y: frame.midY)
-//        gameOverTitle.fontSize = 32
-//        gameOverTitle.zPosition = 11
-//        gameOverTitle.fontColor = .white
-//        gameOverTitle.alpha = 0
-//        gameOverTitle.run(SKAction.fadeIn(withDuration: 1))
-//        addChild(gameOverTitle)
-        
-        
     }
     
     func createPlayingHUD() {
@@ -142,7 +151,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         touchArea.name = "touchArea"
         touchArea.zPosition = 10
         addChild(touchArea)
-        
     }
     
     func createBall() {
@@ -198,6 +206,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func endGame() {
+        if score > highScore {
+            highScore = score
+            defaults.set(highScore, forKey: "HighScore")
+        }
+        print(score)
+        
         scene?.isPaused = true
         
         let gameOver = SKLabelNode(fontNamed: mainFont)
@@ -243,6 +257,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     playButton.run(sequence)
                     gameTitle.run(sequence)
                     footer.run(sequence)
+                    highScoreLabel.run(sequence)
                     
                     let activatePlayer = SKAction.run {
                         self.startWall()
