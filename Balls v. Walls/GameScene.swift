@@ -89,9 +89,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let scaleActionSequence = SKAction.sequence([moveUp, moveDown])
         let repeatAction = SKAction.repeatForever(scaleActionSequence)
         node.run(repeatAction)
+
     }
     
-    
+   
     
     func createMainMenu() {
         playButton = SKSpriteNode(imageNamed: "Main_Menu_Play")
