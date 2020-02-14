@@ -29,6 +29,7 @@ class HomeScene: SKScene {
             GlobalVariables.shared.highScore = 0
             print("HIGHSCORE NOT FOUND")
         }
+        
         createMainMenu()
         
     }
