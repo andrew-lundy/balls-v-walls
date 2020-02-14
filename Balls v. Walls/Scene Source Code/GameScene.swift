@@ -12,20 +12,10 @@ import GameplayKit
 // GAME DESIGN NOTES:
 // zPosition must stay between -10 and 10. Unless the node MUST be above/below all else, 11/-11 can be used respectively
 
-enum GameState {
-    case playing
-    case mainMenu
-    case gameOver
-    case paused
-}
 
-enum CollisionTypes: UInt32 {
-    case ball = 1
-    case wall = 2
-    case ground = 4
-    case scoreDetect = 8
-}
 
+let mainFont = "PressStart2P"
+let defaults = UserDefaults.standard
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -34,24 +24,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
     var gamePausedLabel: SKLabelNode!
-    
-    var playButton: SKSpriteNode!
-    var highScoreLabel: SKLabelNode!
-    
+  
     var pauseButton: SKSpriteNode!
     var resumePlayingButton: SKSpriteNode!
     var touchArea: SKSpriteNode!
     
-    var footer: SKLabelNode!
-    var gameTitle: SKLabelNode!
     var gameOverTitle: SKLabelNode!
     
-    var gameState = GameState.mainMenu
+   
     
     var wall: Wall!
     var bounce: SKAction!
-    
-    let defaults = UserDefaults.standard
     
     var highScore: Int!
     
@@ -60,70 +43,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = "Points: \(score)"
         }
     }
-    let mainFont = "PressStart2P"
-    
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
-        scaleMode = .aspectFill
-    
-        
-        if let highScore = defaults.object(forKey: "HighScore") as? Int {
-            self.highScore = highScore
-            print("HIGH SCORE: \(highScore)")
-        } else {
-            defaults.set(0, forKey: "HighScore")
-            highScore = 0
-            print("HIGH SCORE NOT FOUND")
-        }
-        
-        
+        GlobalVariables.shared.gameState = .playing
         createBall()
         createGround()
-        createMainMenu()
     }
     
-    func bounce(node: SKSpriteNode) {
-        let moveUp = SKAction.moveBy(x: 0, y: 10, duration: 0.3)
-        let moveDown = SKAction.moveBy(x: 0, y: -10, duration: 0.3)
-        let scaleActionSequence = SKAction.sequence([moveUp, moveDown])
-        let repeatAction = SKAction.repeatForever(scaleActionSequence)
-        node.run(repeatAction)
-
-    }
-    
-   
-    
-    func createMainMenu() {
-        playButton = SKSpriteNode(imageNamed: "Main_Menu_Play")
-        playButton.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
-        playButton.scale(to: CGSize(width: playButton.frame.width / 2, height: playButton.frame.height / 2))
-        playButton.name = "playButton"
-        bounce(node: playButton)
-        addChild(playButton)
-        
-        highScoreLabel = SKLabelNode(fontNamed: mainFont)
-        highScoreLabel.fontSize = 19
-        highScoreLabel.text = "Score to Beat: \(highScore!)"
-        highScoreLabel.horizontalAlignmentMode = .center
-        highScoreLabel.position = CGPoint(x: frame.midX, y: playButton.position.y + 150)
-        addChild(highScoreLabel)
-        
-        footer = SKLabelNode(fontNamed: mainFont)
-        footer.fontSize = 17
-        footer.horizontalAlignmentMode = .center
-        footer.position = CGPoint(x: frame.width / 2, y: 17)
-        footer.zPosition = 2
-        footer.text = "Brought to you by Rusty Nail Games"
-        footer.fontColor = .black
-        addChild(footer)
-        
-        gameTitle = SKLabelNode(fontNamed: mainFont)
-        gameTitle.position = CGPoint(x: frame.width / 2, y: frame.maxY - 250)
-        gameTitle.fontSize = 40
-        gameTitle.text = "Balls v. Walls"
-        addChild(gameTitle)
-    }
     
     func createPlayingHUD() {
         scoreLabel = SKLabelNode(fontNamed: mainFont)
@@ -228,14 +155,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         dimmer.zPosition = 9
         addChild(dimmer)
         
-        gameState = .gameOver
+        GlobalVariables.shared.gameState = .gameOver
         ball.removeFromParent()
-        
     }
     
     func pauseGame() {
         scene?.isPaused = true
-        gameState = .paused
+        GlobalVariables.shared.gameState = .paused
     }
     
     
@@ -244,21 +170,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let location = touch.location(in: self)
         let touchedNodes = nodes(at: location)
         
-        switch gameState {
+        switch GlobalVariables.shared.gameState {
         case .mainMenu:
             for node in touchedNodes {
                 if node.name == "playButton" {
-                    gameState = .playing
+                    GlobalVariables.shared.gameState = .playing
                     
                     let fadeOut = SKAction.fadeOut(withDuration: 0.8)
                     let remove = SKAction.removeFromParent()
                     let wait = SKAction.wait(forDuration: 0.5)
                     let sequence = SKAction.sequence([fadeOut, remove, wait])
 
-                    playButton.run(sequence)
-                    gameTitle.run(sequence)
-                    footer.run(sequence)
-                    highScoreLabel.run(sequence)
+//                    playButton.run(sequence)
+//                    gameTitle.run(sequence)
+//                    footer.run(sequence)
+//                    highScoreLabel.run(sequence)
                     
                     let activatePlayer = SKAction.run {
                         self.startWall()
@@ -303,20 +229,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .gameOver:
             print("Game over")
             
-            
-            
         case .paused:
             print("STATE: PLAYING")
             for node in touchedNodes {
                 if node.name == "resumePlayButton" {
                     print("RESUME PLAYING TAPPED")
                     scene?.isPaused = false
-                    gameState = .playing
-                    
+                    GlobalVariables.shared.gameState = .playing
                     
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
-                    
                     
                     let wait = SKAction.wait(forDuration: 3)
                     let fade = SKAction.fadeOut(withDuration: 1)
@@ -332,10 +254,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     wall.pauseAndResumeWall(with: ball, frame: frame)
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
-    
-                 
                 }
             }
+            
+        case .none:
+            return
         }
     }
         
@@ -366,5 +289,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballCollided(with: nodeA)
         }
     }
-    
 }
