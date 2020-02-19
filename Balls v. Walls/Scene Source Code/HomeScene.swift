@@ -50,9 +50,14 @@ class HomeScene: SKScene {
                 let wait = SKAction.wait(forDuration: 0.5)
                 let sequence = SKAction.sequence([fadeOut, remove, wait])
                 
+                playButton.run(sequence)
+                gameTitle.run(sequence)
+                highScoreLabel.run(sequence)
+                
+                
                 guard let playScene = SKScene(fileNamed: "GameScene") else { return }
                 playScene.scaleMode = .aspectFill
-                view?.presentScene(playScene, transition: .crossFade(withDuration: 2))
+                view?.presentScene(playScene, transition: .crossFade(withDuration: 0.7 ))
                 
                 print("PRESENT NEW SCENE")
                 
@@ -79,15 +84,15 @@ extension HomeScene {
         highScoreLabel.horizontalAlignmentMode = .center
         highScoreLabel.position = CGPoint(x: frame.midX, y: playButton.position.y + 150)
         addChild(highScoreLabel)
-        
-        footer = SKLabelNode(fontNamed: mainFont)
-        footer.fontSize = 17
-        footer.horizontalAlignmentMode = .center
-        footer.position = CGPoint(x: frame.width / 2, y: frame.minY + 40)
-        footer.zPosition = 2
-        footer.text = "Brought to you by Rusty Nail Games"
-        footer.fontColor = .white
-        addChild(footer)
+      
+//        footer = SKLabelNode(fontNamed: mainFont)
+//        footer.fontSize = 17
+//        footer.horizontalAlignmentMode = .center
+//        footer.position = CGPoint(x: frame.width / 2, y: frame.minY + 40)
+//        footer.zPosition = 2
+//        footer.text = "Brought to you by Rusty Nail Games"
+//        footer.fontColor = .white
+//        addChild(footer)
         
         gameTitle = SKLabelNode(fontNamed: mainFont)
         gameTitle.position = CGPoint(x: frame.width / 2, y: frame.maxY - 250)

@@ -31,5 +31,7 @@ struct GlobalVariables {
     var gameState: GameState?
     
     private init() {}
-    
 }
+
+
+

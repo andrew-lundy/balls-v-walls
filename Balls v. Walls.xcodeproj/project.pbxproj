@@ -18,6 +18,7 @@
 		264FC42B23F60D0900764325 /* HomeScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 264FC42A23F60D0900764325 /* HomeScene.sks */; };
 		264FC42F23F6100700764325 /* HomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264FC42E23F6100700764325 /* HomeScene.swift */; };
 		264FC43223F61C1000764325 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264FC43123F61C1000764325 /* GlobalVariables.swift */; };
+		265BEE5A23FCCFD80035D0F4 /* Ground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BEE5923FCCFD80035D0F4 /* Ground.swift */; };
 		26CAECEA23693C510052AD63 /* PressStart2P.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26CAECE923693C510052AD63 /* PressStart2P.ttf */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +36,7 @@
 		264FC42A23F60D0900764325 /* HomeScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = HomeScene.sks; sourceTree = "<group>"; };
 		264FC42E23F6100700764325 /* HomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScene.swift; sourceTree = "<group>"; };
 		264FC43123F61C1000764325 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
+		265BEE5923FCCFD80035D0F4 /* Ground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ground.swift; sourceTree = "<group>"; };
 		26CAECE923693C510052AD63 /* PressStart2P.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = PressStart2P.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +75,7 @@
 				264FC42C23F60E2500764325 /* SceneKit Files */,
 				2648E844235199C600690155 /* AppDelegate.swift */,
 				261F0287237E66F000A02C08 /* Wall.swift */,
+				265BEE5923FCCFD80035D0F4 /* Ground.swift */,
 				2648E84C235199C600690155 /* GameViewController.swift */,
 				2648E842235199C600690155 /* Products */,
 				2648E84E235199C600690155 /* Main.storyboard */,
@@ -186,6 +189,7 @@
 			files = (
 				264FC43223F61C1000764325 /* GlobalVariables.swift in Sources */,
 				2648E84B235199C600690155 /* GameScene.swift in Sources */,
+				265BEE5A23FCCFD80035D0F4 /* Ground.swift in Sources */,
 				261F0288237E66F000A02C08 /* Wall.swift in Sources */,
 				2648E84D235199C600690155 /* GameViewController.swift in Sources */,
 				264FC42F23F6100700764325 /* HomeScene.swift in Sources */,

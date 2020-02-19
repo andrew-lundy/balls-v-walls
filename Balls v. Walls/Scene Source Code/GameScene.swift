@@ -21,6 +21,8 @@ let defaults = UserDefaults.standard
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var ball: SKShapeNode!
+    var ground: SKShapeNode!
+    
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
     var gamePausedLabel: SKLabelNode!
@@ -88,7 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.zPosition = -10
         ball.fillColor = colors.randomElement() ?? UIColor.red
         ball.strokeColor = ball.fillColor
-        ball.position = CGPoint(x: frame.width / 6, y: 500)
+        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 50)
         addChild(ball)
         
         ball.physicsBody = SKPhysicsBody(circleOfRadius: 50)
@@ -101,8 +103,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
    
     
     func createGround() {
-        let groundRect = CGRect(x: 0, y: 0, width: frame.width, height: 50)
-        let ground = SKShapeNode(rect: groundRect)
+        let groundRect = CGRect(x: frame.maxX + 50, y: 0, width: frame.width, height: 50)
+        ground = SKShapeNode(rect: groundRect)
         ground.zPosition = 1
         ground.fillColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
         ground.strokeColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
@@ -113,6 +115,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
         ground.physicsBody?.collisionBitMask = 0
         ground.physicsBody?.isDynamic = false
+        
+        
+        
     }
     
   
