@@ -22,6 +22,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var ball: SKShapeNode!
     var ground: SKShapeNode!
+    var mainGround: Ground!
+    
     
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
@@ -32,8 +34,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var touchArea: SKSpriteNode!
     
     var gameOverTitle: SKLabelNode!
-    
-   
     
     var wall: Wall!
     var bounce: SKAction!
@@ -48,9 +48,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
+        
+        highScore = defaults.object(forKey: "HighScore") as? Int ?? 0
+        
+        
         GlobalVariables.shared.gameState = .playing
         createBall()
-        createGround()
+//        createGround()
+        createMainGround()
+        
     }
     
     
@@ -97,27 +103,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
         ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
-        ball.physicsBody?.restitution = 0.8
+        ball.physicsBody?.restitution = 0.6
         ball.physicsBody?.isDynamic = true
+        
+        let activatePlayer = SKAction.run {
+            self.startWall()
+            self.createPlayingHUD()
+        }
+        
+        run(activatePlayer)
     }
    
-    
-    func createGround() {
-        let groundRect = CGRect(x: frame.maxX + 50, y: 0, width: frame.width, height: 50)
-        ground = SKShapeNode(rect: groundRect)
-        ground.zPosition = 1
-        ground.fillColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
-        ground.strokeColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
-        addChild(ground)
-        
-        ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: groundRect.width * 2, height: groundRect.height * 2))
-        ground.physicsBody?.categoryBitMask = CollisionTypes.ground.rawValue
-        ground.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
-        ground.physicsBody?.collisionBitMask = 0
-        ground.physicsBody?.isDynamic = false
-        
-        
-        
+    func createMainGround() {
+        mainGround = Ground(frame: frame)
+        mainGround.createGround(frame: frame)
+        addChild(mainGround)
     }
     
   
@@ -245,7 +245,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
                     
-                    let wait = SKAction.wait(forDuration: 3)
+//                    let wait = SKAction.wait(forDuration: 3)
                     let fade = SKAction.fadeOut(withDuration: 1)
                 
                     let engageBall = SKAction.run {

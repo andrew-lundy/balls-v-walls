@@ -70,12 +70,11 @@
 		2648E843235199C600690155 /* Balls v. Walls */ = {
 			isa = PBXGroup;
 			children = (
+				26D79AF423FD5EB00046381F /* Nodes */,
 				264FC43023F61B3600764325 /* Resources */,
 				264FC42D23F60E3700764325 /* Scene Source Code */,
 				264FC42C23F60E2500764325 /* SceneKit Files */,
 				2648E844235199C600690155 /* AppDelegate.swift */,
-				261F0287237E66F000A02C08 /* Wall.swift */,
-				265BEE5923FCCFD80035D0F4 /* Ground.swift */,
 				2648E84C235199C600690155 /* GameViewController.swift */,
 				2648E842235199C600690155 /* Products */,
 				2648E84E235199C600690155 /* Main.storyboard */,
@@ -111,6 +110,15 @@
 				264FC43123F61C1000764325 /* GlobalVariables.swift */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		26D79AF423FD5EB00046381F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				261F0287237E66F000A02C08 /* Wall.swift */,
+				265BEE5923FCCFD80035D0F4 /* Ground.swift */,
+			);
+			path = Nodes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
