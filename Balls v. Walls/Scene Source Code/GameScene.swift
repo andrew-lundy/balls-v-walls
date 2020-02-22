@@ -145,20 +145,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         print(score)
         
-        scene?.isPaused = true
+        scene?.removeAllActions()
+        wall.isPaused = true
+        wall.removeAllActions()
+        
         
         let gameOver = SKLabelNode(fontNamed: mainFont)
         gameOver.fontSize = 50
         gameOver.text = "GAME OVER"
         gameOver.zPosition = 11
-        gameOver.position = CGPoint(x: frame.midX, y: frame.midY)
+        gameOver.position = CGPoint(x: frame.midX, y: frame.midY + 125)
         addChild(gameOver)
+        
+        let playAgain = SKSpriteNode(imageNamed: "Play_Again")
+        playAgain.zPosition = 11
+        playAgain.size = CGSize(width: frame.width / 2, height: 150)
+        playAgain.position = CGPoint(x: frame.midX, y: frame.midY - 50)
+        playAgain.name = "playAgainButton"
+        GlobalVariables.shared.bounce(node: playAgain)
+        addChild(playAgain)
         
         let dimmer = SKSpriteNode(color: UIColor.black, size: CGSize(width: frame.width * 2, height: frame.height * 2))
         dimmer.position = CGPoint(x: 0, y: 0)
         dimmer.alpha = 0.6
         dimmer.zPosition = 9
         addChild(dimmer)
+        
+        pauseButton.removeFromParent()
         
         GlobalVariables.shared.gameState = .gameOver
         ball.removeFromParent()
@@ -177,33 +190,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch GlobalVariables.shared.gameState {
         case .mainMenu:
-            for node in touchedNodes {
-                if node.name == "playButton" {
-                    GlobalVariables.shared.gameState = .playing
-                    
-                    let fadeOut = SKAction.fadeOut(withDuration: 0.8)
-                    let remove = SKAction.removeFromParent()
-                    let wait = SKAction.wait(forDuration: 0.5)
-                    let sequence = SKAction.sequence([fadeOut, remove, wait])
+            fatalError("MAIN MENU PRESSED ON GAMESCENE.SWIFT FILE - NOT SUPPOSED TO BE ABLE TO DO THIS HERE!")
 
-//                    playButton.run(sequence)
-//                    gameTitle.run(sequence)
-//                    footer.run(sequence)
-//                    highScoreLabel.run(sequence)
-                    
-                    let activatePlayer = SKAction.run {
-                        self.startWall()
-                        self.createPlayingHUD()
-                    }
-                    run(activatePlayer)
-                }
-            }
-            
         case .playing:
             for node in touchedNodes {
                 if node.name == "touchArea" {
                     ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                     ball.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 250))
+                    
                 } else if node.name == "pauseButton" {
                     print("PAUSE BUTTON PRESSED")
                     print("STATE: PAUSED")
@@ -232,7 +226,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
 
         case .gameOver:
-            print("Game over")
+            for node in touchedNodes {
+                if node.name == "playAgainButton" {
+                    guard let playScene = SKScene(fileNamed: "GameScene") else { return }
+                    playScene.scaleMode = .aspectFill
+                    view?.presentScene(playScene, transition: .crossFade(withDuration: 0.7))
+                    
+                }
+            }
             
         case .paused:
             print("STATE: PLAYING")

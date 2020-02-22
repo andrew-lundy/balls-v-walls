@@ -75,7 +75,7 @@ extension HomeScene {
         playButton.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
         playButton.scale(to: CGSize(width: playButton.frame.width / 2, height: playButton.frame.height / 2))
         playButton.name = "playButton"
-        bounce(node: playButton)
+        GlobalVariables.shared.bounce(node: playButton)
         addChild(playButton)
         
         highScoreLabel = SKLabelNode(fontNamed: mainFont)
@@ -100,14 +100,6 @@ extension HomeScene {
         gameTitle.text = "Balls v. Walls"
         addChild(gameTitle)
     }
-        
-    
-    func bounce(node: SKSpriteNode) {
-        let moveUp = SKAction.moveBy(x: 0, y: 10, duration: 0.3)
-        let moveDown = SKAction.moveBy(x: 0, y: -10, duration: 0.3)
-        let scaleActionSequence = SKAction.sequence([moveUp, moveDown])
-        let repeatAction = SKAction.repeatForever(scaleActionSequence)
-        node.run(repeatAction)
-    }
-    
 }
+
+

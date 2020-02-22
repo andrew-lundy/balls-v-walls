@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import SpriteKit
 
 enum GameState {
     case playing
@@ -29,6 +29,15 @@ struct GlobalVariables {
     
     var highScore: Int?
     var gameState: GameState?
+    
+    
+    func bounce(node: SKSpriteNode) {
+        let moveUp = SKAction.moveBy(x: 0, y: 10, duration: 0.3)
+        let moveDown = SKAction.moveBy(x: 0, y: -10, duration: 0.3)
+        let scaleActionSequence = SKAction.sequence([moveUp, moveDown])
+        let repeatAction = SKAction.repeatForever(scaleActionSequence)
+        node.run(repeatAction)
+    }
     
     private init() {}
 }
