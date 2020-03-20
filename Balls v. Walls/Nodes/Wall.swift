@@ -40,7 +40,6 @@ class Wall: SKNode {
     
     
     func createWall(with ball: SKShapeNode, frame: CGRect) {
-        
         colors.shuffle()
         
         for i in 0...3 {

@@ -219,8 +219,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     gamePausedLabel.text = "PAUSED"
                     gamePausedLabel.alpha = 1
                     gamePausedLabel.zPosition = 10
-                    gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+                    gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY + 125)
                     addChild(gamePausedLabel)
+                    
+                    let mainMenuBtn = SKSpriteNode(imageNamed: "Main_Menu")
+                    mainMenuBtn.zPosition = 11
+                    mainMenuBtn.size = CGSize(width: frame.width / 2, height: 150)
+                    mainMenuBtn.position = CGPoint(x: frame.midX, y: frame.midY)
+                    mainMenuBtn.name = "mainMenuButton"
+                    addChild(mainMenuBtn)
+                    
                     
                 }
             }
@@ -236,7 +244,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
         case .paused:
-            print("STATE: PLAYING")
             for node in touchedNodes {
                 if node.name == "resumePlayButton" {
                     print("RESUME PLAYING TAPPED")
