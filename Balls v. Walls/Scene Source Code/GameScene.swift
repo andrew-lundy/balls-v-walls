@@ -46,17 +46,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    override func sceneDidLoad() {
+        
+    }
+    
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         
         highScore = defaults.object(forKey: "HighScore") as? Int ?? 0
         
-        
         GlobalVariables.shared.gameState = .playing
         createBall()
 //        createGround()
         createMainGround()
-        
     }
     
     
@@ -267,6 +269,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     wall.pauseAndResumeWall(with: ball, frame: frame)
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
+                } else if node.name == "mainMenuButton" {
+                    guard let homeScene = SKScene(fileNamed: "HomeScene") else { return }
+                    homeScene.scaleMode = .aspectFill
+                    view?.presentScene(homeScene, transition: .crossFade(withDuration: 0.7))
                 }
             }
             
