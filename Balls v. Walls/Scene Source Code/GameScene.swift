@@ -40,6 +40,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var highScore: Int!
     
+    var gameOver: SKLabelNode!
+    var ballPath: CGMutablePath!
+    var playAgain: SKSpriteNode!
+    var dimmer: SKSpriteNode!
+   
+    
     var score = 0 {
         didSet {
             scoreLabel.text = "Points: \(score)"
@@ -47,7 +53,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func sceneDidLoad() {
+        scoreLabel = SKLabelNode(fontNamed: mainFont)
+        pauseButton = SKSpriteNode(imageNamed: "Pause_Button")
+        touchArea = SKSpriteNode(color: .clear, size: CGSize(width: frame.width * 2, height: frame.height * 2))
+
+        ballPath = CGMutablePath()
+        ballPath.addArc(center: CGPoint.zero, radius: 50, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
+        ball = SKShapeNode(path: ballPath)
         
+        mainGround = Ground(frame: frame)
+        
+        gameOver = SKLabelNode(fontNamed: mainFont)
+        playAgain = SKSpriteNode(imageNamed: "Play_Again")
+        dimmer = SKSpriteNode(color: UIColor.black, size: CGSize(width: frame.width * 2, height: frame.height * 2))
     }
     
     override func didMove(to view: SKView) {
@@ -63,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func createPlayingHUD() {
-        scoreLabel = SKLabelNode(fontNamed: mainFont)
+        
         scoreLabel.text = "Points: 0"
         scoreLabel.fontColor = .white
         scoreLabel.fontSize = 32
@@ -73,7 +91,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.run(SKAction.fadeIn(withDuration: 1))
         addChild(scoreLabel)
         
-        pauseButton = SKSpriteNode(imageNamed: "Pause_Button")
+        
         pauseButton.position = CGPoint(x: frame.maxX - 125, y: frame.minY + 110)
         pauseButton.size = CGSize(width: pauseButton.size.width * 0.08, height: pauseButton.size.height * 0.08)
         pauseButton.zPosition = 11
@@ -82,7 +100,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButton.run(SKAction.fadeIn(withDuration: 1))
         addChild(pauseButton)
         
-        touchArea = SKSpriteNode(color: .clear, size: CGSize(width: frame.width * 2, height: frame.height * 2))
         touchArea.position = CGPoint(x: 0, y: 0)
         touchArea.alpha = 0.1
         
@@ -92,9 +109,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func createBall() {
-        let path = CGMutablePath()
-        path.addArc(center: CGPoint.zero, radius: 50, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
-        ball = SKShapeNode(path: path)
         ball.zPosition = -10
         ball.fillColor = colors.randomElement() ?? UIColor.red
         ball.strokeColor = ball.fillColor
@@ -117,12 +131,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
    
     func createMainGround() {
-        mainGround = Ground(frame: frame)
         mainGround.createGround(frame: frame)
         addChild(mainGround)
     }
     
-  
     func createMainWall() {
         wall = Wall(frame: frame)
         wall.createWall(with: ball, frame: frame)
@@ -151,15 +163,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         wall.isPaused = true
         wall.removeAllActions()
         
-        
-        let gameOver = SKLabelNode(fontNamed: mainFont)
         gameOver.fontSize = 50
         gameOver.text = "GAME OVER"
         gameOver.zPosition = 11
         gameOver.position = CGPoint(x: frame.midX, y: frame.midY + 125)
         addChild(gameOver)
         
-        let playAgain = SKSpriteNode(imageNamed: "Play_Again")
         playAgain.zPosition = 11
         playAgain.size = CGSize(width: frame.width / 2, height: 150)
         playAgain.position = CGPoint(x: frame.midX, y: frame.midY - 50)
@@ -167,14 +176,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         GlobalVariables.shared.bounce(node: playAgain)
         addChild(playAgain)
         
-        let dimmer = SKSpriteNode(color: UIColor.black, size: CGSize(width: frame.width * 2, height: frame.height * 2))
         dimmer.position = CGPoint(x: 0, y: 0)
         dimmer.alpha = 0.6
         dimmer.zPosition = 9
         addChild(dimmer)
         
         pauseButton.removeFromParent()
-        
         GlobalVariables.shared.gameState = .gameOver
         ball.removeFromParent()
     }
@@ -272,7 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 } else if node.name == "mainMenuButton" {
                     guard let homeScene = SKScene(fileNamed: "HomeScene") else { return }
                     homeScene.scaleMode = .aspectFill
-                    view?.presentScene(homeScene, transition: .crossFade(withDuration: 0.7))
+                    view?.presentScene(homeScene, transition: .crossFade(withDuration: 1))
                 }
             }
             

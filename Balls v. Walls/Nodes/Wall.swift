@@ -30,7 +30,7 @@ class Wall: SKNode {
         xPosition = frame.maxX + 15
         sectionRect = CGRect(x: 0, y: 0, width: 25, height: frame.height / 4)
         endPosition = frame.width + (sectionRect.width * 2)
-        moveAction = SKAction.moveTo(x: -endPosition, duration: 4)
+        moveAction = SKAction.moveTo(x: -endPosition, duration: 3.5)
         moveSequence = SKAction.sequence([moveAction, SKAction.removeFromParent()])
     }
     
