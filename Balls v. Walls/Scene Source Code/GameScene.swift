@@ -24,13 +24,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ground: SKShapeNode!
     var mainGround: Ground!
     
-    
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
     var scoreLabel: SKLabelNode!
     var gamePausedLabel: SKLabelNode!
   
     var pauseButton: SKSpriteNode!
     var resumePlayingButton: SKSpriteNode!
+    var mainMenuBtn: SKSpriteNode!
     var touchArea: SKSpriteNode!
     
     var gameOverTitle: SKLabelNode!
@@ -44,13 +44,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ballPath: CGMutablePath!
     var playAgain: SKSpriteNode!
     var dimmer: SKSpriteNode!
-   
     
     var score = 0 {
         didSet {
             scoreLabel.text = "Points: \(score)"
         }
     }
+    
     
     override func sceneDidLoad() {
         scoreLabel = SKLabelNode(fontNamed: mainFont)
@@ -66,22 +66,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOver = SKLabelNode(fontNamed: mainFont)
         playAgain = SKSpriteNode(imageNamed: "Play_Again")
         dimmer = SKSpriteNode(color: UIColor.black, size: CGSize(width: frame.width * 2, height: frame.height * 2))
+        
+        gamePausedLabel = SKLabelNode(fontNamed: mainFont)
+        mainMenuBtn = SKSpriteNode(imageNamed: "Main_Menu")
+        
     }
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         
         highScore = defaults.object(forKey: "HighScore") as? Int ?? 0
-        
         GlobalVariables.shared.gameState = .playing
         createBall()
-//        createGround()
         createMainGround()
     }
     
-    
     func createPlayingHUD() {
-        
         scoreLabel.text = "Points: 0"
         scoreLabel.fontColor = .white
         scoreLabel.fontSize = 32
@@ -108,6 +108,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(touchArea)
     }
     
+    // MARK: - This will need to be worked on when new assets are brought in
     func createBall() {
         ball.zPosition = -10
         ball.fillColor = colors.randomElement() ?? UIColor.red
@@ -161,7 +162,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         scene?.removeAllActions()
         wall.isPaused = true
-        wall.removeAllActions()
         
         gameOver.fontSize = 50
         gameOver.text = "GAME OVER"
@@ -223,7 +223,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     resumePlayingButton.name = "resumePlayButton"
                     addChild(resumePlayingButton)
                     
-                    gamePausedLabel = SKLabelNode(fontNamed: mainFont)
                     gamePausedLabel.fontSize = 50
                     gamePausedLabel.text = "PAUSED"
                     gamePausedLabel.alpha = 1
@@ -231,14 +230,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY + 125)
                     addChild(gamePausedLabel)
                     
-                    let mainMenuBtn = SKSpriteNode(imageNamed: "Main_Menu")
+                    
                     mainMenuBtn.zPosition = 11
                     mainMenuBtn.size = CGSize(width: frame.width / 2, height: 150)
                     mainMenuBtn.position = CGPoint(x: frame.midX, y: frame.midY)
                     mainMenuBtn.name = "mainMenuButton"
                     addChild(mainMenuBtn)
-                    
-                    
                 }
             }
 
@@ -276,6 +273,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     wall.pauseAndResumeWall(with: ball, frame: frame)
                     ball.run(engageBallSequence)
                     gamePausedLabel.run(fade)
+                    mainMenuBtn.run(fade)
                 } else if node.name == "mainMenuButton" {
                     guard let homeScene = SKScene(fileNamed: "HomeScene") else { return }
                     homeScene.scaleMode = .aspectFill
@@ -290,7 +288,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     
     override func update(_ currentTime: TimeInterval) {
-      
+    
     }
     
     func ballCollided(with node: SKNode) {
