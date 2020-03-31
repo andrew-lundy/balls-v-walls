@@ -80,7 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        createBall()
         let ball = Ball()
         ball.zPosition = -10
-        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 50)
+        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 75)
         addChild(ball)
         
         createMainGround()

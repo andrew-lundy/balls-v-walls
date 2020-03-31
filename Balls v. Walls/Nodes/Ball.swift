@@ -16,7 +16,7 @@ class Ball: SKSpriteNode {
         let ballSize = CGSize(width: 125, height: 125)
         super.init(texture: ballTexture, color: UIColor.clear, size: ballSize)
         
-        physicsBody = SKPhysicsBody(circleOfRadius: 50)
+        physicsBody = SKPhysicsBody(texture: ballTexture, size: ballSize)
         physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
         physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
