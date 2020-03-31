@@ -77,7 +77,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         highScore = defaults.object(forKey: "HighScore") as? Int ?? 0
         GlobalVariables.shared.gameState = .playing
-        createBall()
+//        createBall()
+        let ball = Ball()
+        ball.zPosition = -10
+        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 50)
+        addChild(ball)
+        
         createMainGround()
     }
     

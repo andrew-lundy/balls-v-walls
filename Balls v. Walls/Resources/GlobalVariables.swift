@@ -29,7 +29,7 @@ struct GlobalVariables {
     
     var highScore: Int?
     var gameState: GameState?
-    
+    var ballTexture = SKTexture(imageNamed: "Ball_Blue")
     
     func bounce(node: SKSpriteNode) {
         let moveUp = SKAction.moveBy(x: 0, y: 10, duration: 0.3)
