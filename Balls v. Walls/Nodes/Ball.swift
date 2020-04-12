@@ -11,10 +11,37 @@ import SpriteKit
 
 
 class Ball: SKSpriteNode {
+    
+    var ballTextureNames: [String]!
+    var currentTextureName: String!
+    var ballTexture: SKTexture!
+   
+    
     init() {
-        let ballTexture = SKTexture(imageNamed: "Ball_Blue")
+        ballTextureNames = ["Ball_Blue", "Ball_Green", "Ball_Yellow", "Ball_Red"]
+        currentTextureName = ballTextureNames.randomElement()
+        ballTexture = SKTexture(imageNamed: "\(currentTextureName!)")
         let ballSize = CGSize(width: 125, height: 125)
+        
+       
+        
         super.init(texture: ballTexture, color: UIColor.clear, size: ballSize)
+        
+         name = "BALL"
+        
+        
+        switch currentTextureName {
+        case "Ball_Blue":
+            color = UIColor.blue
+        case "Ball_Green":
+            color = UIColor.green
+        case "Ball_Yellow":
+            color = UIColor.yellow
+        case "Ball_Red":
+            color = UIColor.red
+        default:
+            color = UIColor.red
+        }
         
         physicsBody = SKPhysicsBody(texture: ballTexture, size: ballSize)
         physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
@@ -23,6 +50,27 @@ class Ball: SKSpriteNode {
         physicsBody?.restitution = 0.6
         physicsBody?.isDynamic = true
     }
+    
+    
+    func changeBallTexture() {
+        ballTextureNames = ["Ball_Blue", "Ball_Green", "Ball_Yellow", "Ball_Red"]
+        currentTextureName = ballTextureNames.randomElement()
+        ballTexture = SKTexture(imageNamed: "\(currentTextureName!)")
+        
+        switch currentTextureName {
+        case "Ball_Blue":
+            color = UIColor.blue
+        case "Ball_Green":
+            color = UIColor.green
+        case "Ball_Yellow":
+            color = UIColor.yellow
+        case "Ball_Red":
+            color = UIColor.red
+        default:
+            color = UIColor.red
+        }
+    }
+  
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

@@ -39,7 +39,7 @@ class Wall: SKNode {
     }
     
     
-    func createWall(with ball: SKShapeNode, frame: CGRect) {
+    func createWall(with ball: SKSpriteNode, frame: CGRect) {
         colors.shuffle()
         
         for i in 0...3 {
@@ -56,11 +56,11 @@ class Wall: SKNode {
             
             section.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
             
-            if section.fillColor == ball.fillColor {
+            if section.fillColor == ball.color {
                 section.name = "scoreDetect"
                 section.physicsBody?.collisionBitMask = 0
                 section.physicsBody?.categoryBitMask = 0
-            } else if section.fillColor != ball.fillColor {
+            } else if section.fillColor != ball.color {
                 section.name = "wall"
                 section.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
                 section.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
@@ -72,7 +72,7 @@ class Wall: SKNode {
     }
     
     
-    func stopWall(with ball: SKShapeNode, frame: CGRect) {
+    func stopWall(with ball: SKSpriteNode, frame: CGRect) {
         for child in children {
             if child.name == "wall" || child.name == "scoreDetect" {
                 child.removeAllActions()
@@ -80,7 +80,7 @@ class Wall: SKNode {
         }
     }
     
-    func pauseAndResumeWall(with ball: SKShapeNode, frame: CGRect) {
+    func pauseAndResumeWall(with ball: SKSpriteNode, frame: CGRect) {
         for child in children {
             if child.name == "wall" || child.name == "scoreDetect" {
                 child.removeAllActions()
