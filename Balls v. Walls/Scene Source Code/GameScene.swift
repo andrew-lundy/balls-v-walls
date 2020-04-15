@@ -77,13 +77,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         highScore = defaults.object(forKey: "HighScore") as? Int ?? 0
         GlobalVariables.shared.gameState = .playing
-//        createBall()
-//        let ball = Ball()
-//        ball.zPosition = -10
-//        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 75)
-//        addChild(ball)
-        
-        
         createTextureBall()
         createMainGround()
     }
@@ -129,7 +122,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         run(activatePlayer)
     }
     
-    // MARK: - This will need to be worked on when new assets are brought in
+    
     func createBall() {
         ball.zPosition = -10
         ball.fillColor = colors.randomElement() ?? UIColor.red
@@ -317,11 +310,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func ballCollided(with node: SKNode) {
         if node.name == "scoreDetect" {
-            print("PLAYER SCORED")
+//            print("PLAYER SCORED")
             score += 1
             newBall.changeBallTexture()
+            
         } else if node.name == "wall" {
-            print("PLAYER HIT WALL")
+//            print("PLAYER HIT WALL")
             endGame()
         }
     }
@@ -331,10 +325,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard let nodeA = contact.bodyA.node else { return }
         guard let nodeB = contact.bodyB.node else { return }
         
+        let contactPoint = contact.contactPoint
+        let contactX = contactPoint.x
+        
         if nodeA == newBall {
-            ballCollided(with: nodeB)
+            let ballX = newBall.position.x
+            let margin = newBall.size.width / 2
+            
+            print(contactX)
+            
+            if contactX.rounded() == 118 {
+                ballCollided(with: nodeB)
+                print("HIT")
+            }
+
         } else if nodeB == newBall {
-            ballCollided(with: nodeA)
+//            ballCollided(with: nodeA)
+            let contactPoint = contact.contactPoint
+            let contactX = contactPoint.x
+            
+            if contactX.rounded() == 118 {
+                ballCollided(with: nodeA)
+                print("HIT")
+            }
+      
         }
     }
 }

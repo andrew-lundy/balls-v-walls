@@ -27,7 +27,7 @@ class Ball: SKSpriteNode {
         
         super.init(texture: ballTexture, color: UIColor.clear, size: ballSize)
         
-         name = "BALL"
+        name = "BALL"
         
         
         switch currentTextureName {
@@ -56,6 +56,8 @@ class Ball: SKSpriteNode {
         ballTextureNames = ["Ball_Blue", "Ball_Green", "Ball_Yellow", "Ball_Red"]
         currentTextureName = ballTextureNames.randomElement()
         ballTexture = SKTexture(imageNamed: "\(currentTextureName!)")
+        
+        self.run(SKAction.setTexture(ballTexture))
         
         switch currentTextureName {
         case "Ball_Blue":
