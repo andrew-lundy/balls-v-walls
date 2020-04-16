@@ -114,6 +114,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         newBall.position = CGPoint(x: frame.width / 6, y: frame.height + 65)
         addChild(newBall)
         
+        
         let activatePlayer = SKAction.run {
             self.startWall()
             self.createPlayingHUD()
@@ -148,6 +149,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func createMainGround() {
         mainGround.createGround(frame: frame)
         addChild(mainGround)
+  
     }
     
     func createMainWall() {
@@ -310,45 +312,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func ballCollided(with node: SKNode) {
         if node.name == "scoreDetect" {
-//            print("PLAYER SCORED")
+            print("PLAYER SCORED")
             score += 1
             newBall.changeBallTexture()
-            
         } else if node.name == "wall" {
-//            print("PLAYER HIT WALL")
+            print("PLAYER HIT WALL")
             endGame()
         }
     }
-    
     
     func didBegin(_ contact: SKPhysicsContact) {
         guard let nodeA = contact.bodyA.node else { return }
         guard let nodeB = contact.bodyB.node else { return }
         
-        let contactPoint = contact.contactPoint
-        let contactX = contactPoint.x
-        
         if nodeA == newBall {
-            let ballX = newBall.position.x
-            let margin = newBall.size.width / 2
-            
-            print(contactX)
-            
-            if contactX.rounded() == 118 {
-                ballCollided(with: nodeB)
-                print("HIT")
-            }
-
+            ballCollided(with: nodeB)
         } else if nodeB == newBall {
-//            ballCollided(with: nodeA)
-            let contactPoint = contact.contactPoint
-            let contactX = contactPoint.x
-            
-            if contactX.rounded() == 118 {
-                ballCollided(with: nodeA)
-                print("HIT")
-            }
-      
+            ballCollided(with: nodeA)
         }
     }
 }

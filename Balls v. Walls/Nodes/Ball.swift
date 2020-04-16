@@ -23,12 +23,9 @@ class Ball: SKSpriteNode {
         ballTexture = SKTexture(imageNamed: "\(currentTextureName!)")
         let ballSize = CGSize(width: 125, height: 125)
         
-       
-        
         super.init(texture: ballTexture, color: UIColor.clear, size: ballSize)
         
         name = "BALL"
-        
         
         switch currentTextureName {
         case "Ball_Blue":
@@ -43,7 +40,7 @@ class Ball: SKSpriteNode {
             color = UIColor.red
         }
         
-        physicsBody = SKPhysicsBody(texture: ballTexture, size: ballSize)
+        physicsBody = SKPhysicsBody(circleOfRadius: 50)
         physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
         physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
         physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue

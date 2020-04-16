@@ -27,10 +27,13 @@ class Ground: SKNode {
         endingXPosition = frame.minX
         groundRect = CGRect(x: startingXPosition, y: 0, width: frame.width, height: 50)
         moveAction = SKAction.moveTo(x: endingXPosition, duration: 0.8)
+        
+        name = "ground"
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+        
     }
     
     func createGround(frame: CGRect) {
