@@ -70,6 +70,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gamePausedLabel = SKLabelNode(fontNamed: mainFont)
         mainMenuBtn = SKSpriteNode(imageNamed: "Main_Menu")
         
+       
+        
     }
     
     override func didMove(to view: SKView) {
@@ -305,9 +307,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
         
+    var ballRotation: CGFloat!
     
     override func update(_ currentTime: TimeInterval) {
-    
+//        if newBall.zRotation < 15 {
+//            newBall.run(.rotate(byAngle: -15, duration: 5))
+//        }
     }
     
     func ballCollided(with node: SKNode) {
@@ -318,6 +323,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if node.name == "wall" {
             print("PLAYER HIT WALL")
             endGame()
+        } else if node.name == "ground" {
+            print("HIT GROUND")
+            newBall.run(.rotate(byAngle: -15, duration: 5))
         }
     }
     

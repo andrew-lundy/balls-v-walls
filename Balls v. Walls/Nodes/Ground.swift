@@ -27,8 +27,7 @@ class Ground: SKNode {
         endingXPosition = frame.minX
         groundRect = CGRect(x: startingXPosition, y: 0, width: frame.width, height: 50)
         moveAction = SKAction.moveTo(x: endingXPosition, duration: 0.8)
-        
-        name = "ground"
+    
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -46,9 +45,9 @@ class Ground: SKNode {
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: groundRect.width * 2, height: groundRect.height * 2))
         ground.physicsBody?.categoryBitMask = CollisionTypes.ground.rawValue
         ground.physicsBody?.contactTestBitMask = CollisionTypes.ball.rawValue
-        ground.physicsBody?.collisionBitMask = 0
+        ground.physicsBody?.collisionBitMask = CollisionTypes.ball.rawValue
         ground.physicsBody?.isDynamic = false
-        
+        ground.name = "ground"
         addChild(ground)
     }
 }
