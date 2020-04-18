@@ -69,9 +69,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         gamePausedLabel = SKLabelNode(fontNamed: mainFont)
         mainMenuBtn = SKSpriteNode(imageNamed: "Main_Menu")
-        
-       
-        
+            
     }
     
     override func didMove(to view: SKView) {
