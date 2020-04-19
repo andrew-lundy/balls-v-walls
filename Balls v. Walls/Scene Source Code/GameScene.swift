@@ -44,6 +44,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playAgain: SKSpriteNode!
     var dimmer: SKSpriteNode!
     
+    var endingXPosition: CGFloat!
+    var moveAction: SKAction!
+    
+    
     var score = 0 {
         didSet {
             scoreLabel.text = "Points: \(score)"
@@ -51,11 +55,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
+    // Called before didMoveTo
     override func sceneDidLoad() {
         scoreLabel = SKLabelNode(fontNamed: mainFont)
         pauseButton = SKSpriteNode(imageNamed: "Pause_Button")
         touchArea = SKSpriteNode(color: .clear, size: CGSize(width: frame.width * 2, height: frame.height * 2))
 
+        endingXPosition = frame.minX
+        moveAction = SKAction.moveTo(x: endingXPosition, duration: 0.8)
+        
 //        ballPath = CGMutablePath()
 //        ballPath.addArc(center: CGPoint.zero, radius: 50, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
 //        ball = SKShapeNode(path: ballPath)
@@ -142,14 +150,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.startWall()
             self.createPlayingHUD()
         }
-        
         run(activatePlayer)
     }
    
     func createMainGround() {
         mainGround.createGround(frame: frame)
         addChild(mainGround)
-  
     }
     
     func createMainWall() {
@@ -313,6 +319,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        }
     }
     
+    
+    
+    // Custom function
     func ballCollided(with node: SKNode) {
         if node.name == "scoreDetect" {
             print("PLAYER SCORED")
@@ -327,6 +336,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // This method comes from the SKPhysicsContactDelegate
     func didBegin(_ contact: SKPhysicsContact) {
         guard let nodeA = contact.bodyA.node else { return }
         guard let nodeB = contact.bodyB.node else { return }
@@ -337,4 +347,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballCollided(with: nodeA)
         }
     }
+    
+    
+    
+    
+    
 }

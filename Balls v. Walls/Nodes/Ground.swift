@@ -23,16 +23,14 @@ class Ground: SKNode {
     init(frame: CGRect) {
         super.init()
         
-        startingXPosition = frame.minX
+        startingXPosition = frame.maxX
         endingXPosition = frame.minX
-        groundRect = CGRect(x: startingXPosition, y: 0, width: frame.width, height: 50)
+        groundRect = CGRect(x: endingXPosition, y: 0, width: frame.width, height: 50)
         moveAction = SKAction.moveTo(x: endingXPosition, duration: 0.8)
-    
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-        
     }
     
     func createGround(frame: CGRect) {
@@ -40,7 +38,6 @@ class Ground: SKNode {
         ground.zPosition = 1
         ground.fillColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
         ground.strokeColor = UIColor(red: 156/255, green: 157/255, blue: 158/255, alpha: 1)
-        
       
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: groundRect.width * 2, height: groundRect.height * 2))
         ground.physicsBody?.categoryBitMask = CollisionTypes.ground.rawValue
@@ -49,5 +46,8 @@ class Ground: SKNode {
         ground.physicsBody?.isDynamic = false
         ground.name = "ground"
         addChild(ground)
+        
+        ground.run(moveAction)
+        
     }
 }
