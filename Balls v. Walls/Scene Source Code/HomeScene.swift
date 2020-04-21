@@ -12,6 +12,7 @@ import GameplayKit
 
 class HomeScene: SKScene {
     var playButton: SKSpriteNode!
+    var optionsButton: SKSpriteNode!
     var highScoreLabel: SKLabelNode!
 
     var bounce: SKAction!
@@ -29,7 +30,6 @@ class HomeScene: SKScene {
             GlobalVariables.shared.highScore = 0
             print("HIGHSCORE NOT FOUND")
         }
-        
         createMainMenu()
     }
  
@@ -76,6 +76,14 @@ extension HomeScene {
         playButton.name = "playButton"
         GlobalVariables.shared.bounce(node: playButton)
         addChild(playButton)
+        
+        optionsButton = SKSpriteNode(imageNamed: "Options_Button")
+        optionsButton.position.x = playButton.position.x
+        optionsButton.position.y = playButton.position.y - 175
+        optionsButton.scale(to: CGSize(width: playButton.frame.width / 2, height: playButton.frame.height / 2))
+        optionsButton.name = "optionsButton"
+        GlobalVariables.shared.bounce(node: optionsButton)
+        addChild(optionsButton)
         
         highScoreLabel = SKLabelNode(fontNamed: mainFont)
         highScoreLabel.fontSize = 19

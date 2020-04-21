@@ -78,6 +78,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gamePausedLabel = SKLabelNode(fontNamed: mainFont)
         mainMenuBtn = SKSpriteNode(imageNamed: "Main_Menu")
             
+        
+        
     }
     
     override func didMove(to view: SKView) {
@@ -87,6 +89,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         GlobalVariables.shared.gameState = .playing
         createTextureBall()
         createMainGround()
+        
+        
     }
     
     func createPlayingHUD() {
@@ -264,6 +268,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
 
+        case .antiGravity:
+                   for node in touchedNodes {
+                        if node.name == "touchArea" {
+                            newBall.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                            newBall.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -250))
+                            
+                        } else if node.name == "pauseButton" {
+                            print("PAUSE BUTTON PRESSED")
+                            print("STATE: PAUSED")
+                            
+                            pauseGame()
+                            newBall.physicsBody?.isDynamic = false
+            
+                            pauseButton.alpha = 0
+           
+                            resumePlayingButton = SKSpriteNode(imageNamed: "Play_Button")
+                            resumePlayingButton.position = pauseButton.position
+                            resumePlayingButton.size = CGSize(width: resumePlayingButton.size.width * 0.08, height: resumePlayingButton.size.height * 0.08)
+                            
+                            resumePlayingButton.name = "resumePlayButton"
+                            addChild(resumePlayingButton)
+                            
+                            gamePausedLabel.fontSize = 50
+                            gamePausedLabel.text = "PAUSED"
+                            gamePausedLabel.alpha = 1
+                            gamePausedLabel.zPosition = 10
+                            gamePausedLabel.position = CGPoint(x: frame.midX, y: frame.midY + 125)
+                            addChild(gamePausedLabel)
+                            
+                            
+                            mainMenuBtn.zPosition = 11
+                            mainMenuBtn.size = CGSize(width: frame.width / 2, height: 150)
+                            mainMenuBtn.position = CGPoint(x: frame.midX, y: frame.midY)
+                            mainMenuBtn.name = "mainMenuButton"
+                            addChild(mainMenuBtn)
+                        }
+                    }
+            
         case .gameOver:
             for node in touchedNodes {
                 if node.name == "playAgainButton" {
@@ -277,7 +319,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .paused:
             for node in touchedNodes {
                 if node.name == "resumePlayButton" {
-                    print("RESUME PLAYING TAPPED")
                     scene?.isPaused = false
                     GlobalVariables.shared.gameState = .playing
                     
@@ -306,7 +347,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
+       
+            
         case .none:
+            return
+            
+        default:
             return
         }
     }
@@ -314,8 +360,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ballRotation: CGFloat!
     
     override func update(_ currentTime: TimeInterval) {
-//        if newBall.zRotation < 15 {
-//            newBall.run(.rotate(byAngle: -15, duration: 5))
+//        if GlobalVariables.shared.gameState == GameState.antiGravity {
+//
 //        }
     }
     
@@ -326,12 +372,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if node.name == "scoreDetect" {
             print("PLAYER SCORED")
             score += 1
+            
+            if score == 2 {
+                GlobalVariables.shared.gameState = GameState.antiGravity
+                SKAction.run {
+                    SKAction.wait(forDuration: 1)
+                    
+                }
+                self.physicsWorld.gravity = CGVector(dx: 0, dy: 9.8)
+            }
+            
             newBall.changeBallTexture()
         } else if node.name == "wall" {
             print("PLAYER HIT WALL")
             endGame()
         } else if node.name == "ground" {
             print("HIT GROUND")
+            self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
             newBall.run(.rotate(byAngle: -15, duration: 5))
         }
     }

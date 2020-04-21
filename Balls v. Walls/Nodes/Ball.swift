@@ -26,7 +26,7 @@ class Ball: SKSpriteNode {
         super.init(texture: ballTexture, color: UIColor.clear, size: ballSize)
         
         name = "BALL"
-        
+    
         switch currentTextureName {
         case "Ball_Blue":
             color = UIColor.blue

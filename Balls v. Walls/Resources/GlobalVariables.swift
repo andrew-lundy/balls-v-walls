@@ -14,6 +14,7 @@ enum GameState {
     case mainMenu
     case gameOver
     case paused
+    case antiGravity
 }
 
 enum CollisionTypes: UInt32 {
