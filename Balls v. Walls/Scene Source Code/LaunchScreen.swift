@@ -10,6 +10,7 @@ import SpriteKit
 import GameplayKit
 
 class LaunchScreen: SKScene {
+    
     override func didMove(to view: SKView) {
         transitionScene(scene: "HomeScene")
     }
