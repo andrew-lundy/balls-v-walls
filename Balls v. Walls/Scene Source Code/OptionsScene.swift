@@ -38,9 +38,6 @@ class OptionsScene: SKScene {
     var titles: [SKSpriteNode]!
     
     override func didMove(to view: SKView) {
-        
-        
-        
         createMenu()
     }
     
@@ -97,62 +94,60 @@ class OptionsScene: SKScene {
         modeSpeedButton.anchorPoint = CGPoint(x: 1, y: 0)
         modeSpeedButton.position = CGPoint(x: frame.maxX + 10, y: modeReverseGravityButton.position.y - 60)
         addChild(modeSpeedButton)
-        
+
         themesTitle.size = titleSize
         themesTitle.position = CGPoint(x: leftSideMargin + 5, y: modeSpeedButton.position.y - 75)
         addChild(themesTitle)
         
         addThemeImages()
-        
     }
     
-    func addThemeImage(at position: CGPoint, themeName: String) {
+    func addThemeImage(at position: CGPoint, themeName: String) -> SKSpriteNode {
         var themeNameSprite: SKSpriteNode!
         themeNameSprite = SKSpriteNode(imageNamed: themeName)
         themeNameSprite.position = position
         themeNameSprite.size = CGSize(width: 350, height: 200)
         themeNameSprite.anchorPoint = CGPoint(x: 0, y: 0.5)
+        themeNameSprite.name = themeName
         
-        addChild(themeNameSprite)
+        return themeNameSprite
     }
     
     
     func addThemeImages() {
         
-        var imageNames = ["Blues", "Elements", "Reds", "Greens", "Metals", "OuterSpace", "Oranges", "Purples", "Pinks", "IceCream"]
+        var imageNames = ["Blues", "Reds", "Greens", "Oranges", "Purples", "Elements", "Metals", "OuterSpace", "IceCream"]
         
-        let midPoint = imageNames.count / 2
-        let firstThird = imageNames[0...3]
-        let secondThird = imageNames[4...6]
-        let thirdThird = imageNames[7...9]
+       
+        let themeBlue = addThemeImage(at: CGPoint(x: frame.minX - 30, y: themesTitle.position.y - 50), themeName: "Theme_Blues")
+        addChild(themeBlue)
         
+        let themeRed = addThemeImage(at: CGPoint(x: frame.minX + 185, y: themesTitle.position.y - 50), themeName: "Theme_Reds")
+        addChild(themeRed)
         
-        var indexOfImage = 0
-        for imageName in firstThird {
-            addThemeImage(at: CGPoint(x: Int(leftSideMargin - 70) + (indexOfImage * 160), y: Int(themesTitle.position.y)), themeName: "Theme_\(imageName)")
-            
-            if indexOfImage == 3 {
-                indexOfImage = 0
-                break
-            }
-            indexOfImage += 1
-        }
+        let themeMaterials = addThemeImage(at: CGPoint(x: frame.minX - 30, y: themesTitle.position.y - 300), themeName: "Theme_Metals")
+        addChild(themeMaterials)
         
-        for imageName in secondThird {
-            addThemeImage(at: CGPoint(x: Int(leftSideMargin - 60) + (indexOfImage * 230), y: Int(themesTitle.position.y - 75)), themeName: "Theme_\(imageName)")
-            
-            if indexOfImage == 3 {
-                indexOfImage = 0
-                break
-            }
-            indexOfImage += 1
-        }
+        let themeOuterSpace = addThemeImage(at: CGPoint(x: leftSideMargin + 150, y: themesTitle.position.y - 300), themeName: "Theme_OuterSpace")
+        addChild(themeOuterSpace)
         
-                 
-        addThemeImage(at: CGPoint(x: leftSideMargin - 50, y: themesTitle.position.y - 150), themeName: "Theme_Purples")
-        addThemeImage(at: CGPoint(x: leftSideMargin + 175, y: themesTitle.position.y - 150), themeName: "Theme_IceCream")
-        addThemeImage(at: CGPoint(x: leftSideMargin + 415, y: themesTitle.position.y - 150), themeName: "Theme_Pinks")
+        addThemeImage(at: CGPoint(x: leftSideMargin + 380, y: themesTitle.position.y - 300), themeName: "Theme_IceCream")
         
         
     }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+//        let touchedNodes = nodes(at: location)
+        let frontTouchedNode = atPoint(location)
+
+        print(frontTouchedNode.name)
+        
+        
+        
+        
+    }
+    
 }

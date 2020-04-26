@@ -20,6 +20,8 @@ class HomeScene: SKScene {
     var footer: SKLabelNode!
     var gameTitle: SKLabelNode!
     
+    var sceneTransferSequence: SKAction!
+    
     override func didMove(to view: SKView) {
         GlobalVariables.shared.gameState = .mainMenu
         if let highscore = defaults.object(forKey: "HighScore") as? Int {
@@ -31,8 +33,14 @@ class HomeScene: SKScene {
             print("HIGHSCORE NOT FOUND")
         }
         createMainMenu()
+        
+        
     }
  
+    
+    
+    
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
@@ -44,22 +52,13 @@ class HomeScene: SKScene {
             if node.name == "playButton" {
                 GlobalVariables.shared.gameState = .playing
                 
-                let fadeOut = SKAction.fadeOut(withDuration: 0.8)
-                let remove = SKAction.removeFromParent()
-                let wait = SKAction.wait(forDuration: 0.5)
-                let sequence = SKAction.sequence([fadeOut, remove, wait])
-                
-                playButton.run(sequence)
-                gameTitle.run(sequence)
-                highScoreLabel.run(sequence)
-                
-                
                 guard let playScene = SKScene(fileNamed: "GameScene") else { return }
                 playScene.scaleMode = .aspectFill
-                view?.presentScene(playScene, transition: .crossFade(withDuration: 0.7 ))
-                
-                print("PRESENT NEW SCENE")
-                
+                view?.presentScene(playScene, transition: .crossFade(withDuration: 0.7))
+            } else if node.name == "optionsButton" {
+                guard let optionsScene = SKScene(fileNamed: "OptionsScene") else { return }
+                optionsScene.scaleMode = .aspectFill
+                view?.presentScene(optionsScene, transition: .crossFade(withDuration: 0.7))
             }
         }
     }
@@ -82,7 +81,6 @@ extension HomeScene {
         optionsButton.position.y = playButton.position.y - 175
         optionsButton.scale(to: CGSize(width: playButton.frame.width / 2, height: playButton.frame.height / 2))
         optionsButton.name = "optionsButton"
-        GlobalVariables.shared.bounce(node: optionsButton)
         addChild(optionsButton)
         
         highScoreLabel = SKLabelNode(fontNamed: mainFont)
