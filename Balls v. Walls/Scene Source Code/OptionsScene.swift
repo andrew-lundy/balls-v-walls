@@ -37,8 +37,14 @@ class OptionsScene: SKScene {
     
     var titles: [SKSpriteNode]!
     
-    override func didMove(to view: SKView) {
+    override func sceneDidLoad() {
         createMenu()
+        addThemeImages()
+    }
+    
+    override func didMove(to view: SKView) {
+        
+        
     }
     
     
@@ -99,7 +105,7 @@ class OptionsScene: SKScene {
         themesTitle.position = CGPoint(x: leftSideMargin + 5, y: modeSpeedButton.position.y - 75)
         addChild(themesTitle)
         
-        addThemeImages()
+       
     }
     
     func addThemeImage(at position: CGPoint, themeName: String) -> SKSpriteNode {
@@ -116,22 +122,35 @@ class OptionsScene: SKScene {
     
     func addThemeImages() {
         
-        var imageNames = ["Blues", "Reds", "Greens", "Oranges", "Purples", "Elements", "Metals", "OuterSpace", "IceCream"]
+        var imageNames = ["Blues", "Reds", "Greens", "Oranges", "Purples", "Pinks", "Elements", "Metals", "OuterSpace", "IceCream"]
         
        
-        let themeBlue = addThemeImage(at: CGPoint(x: frame.minX - 30, y: themesTitle.position.y - 50), themeName: "Theme_Blues")
-        addChild(themeBlue)
+        let themeBlues = addThemeImage(at: CGPoint(x: frame.minX - 30, y: themesTitle.position.y), themeName: "Theme_Blues")
+        addChild(themeBlues)
         
-        let themeRed = addThemeImage(at: CGPoint(x: frame.minX + 185, y: themesTitle.position.y - 50), themeName: "Theme_Reds")
-        addChild(themeRed)
+        let themeReds = addThemeImage(at: CGPoint(x: themeBlues.position.x + 225, y: themeBlues.position.y), themeName: "Theme_Reds")
+        addChild(themeReds)
         
-        let themeMaterials = addThemeImage(at: CGPoint(x: frame.minX - 30, y: themesTitle.position.y - 300), themeName: "Theme_Metals")
-        addChild(themeMaterials)
+        let themeGreens = addThemeImage(at: CGPoint(x: themeReds.position.x + 235, y: themeBlues.position.y), themeName: "Theme_Greens")
+        addChild(themeGreens)
         
-        let themeOuterSpace = addThemeImage(at: CGPoint(x: leftSideMargin + 150, y: themesTitle.position.y - 300), themeName: "Theme_OuterSpace")
+        let themeOranges = addThemeImage(at: CGPoint(x: frame.minX - 15, y: themeBlues.position.y - 100), themeName: "Theme_Oranges")
+        addChild(themeOranges)
+        
+        let themePinks = addThemeImage(at: CGPoint(x: themeOranges.position.x + 210, y: themeOranges.position.y), themeName: "Theme_Pinks")
+        addChild(themePinks)
+        
+        let themePurples = addThemeImage(at: CGPoint(x: themePinks.position.x + 225, y: themePinks.position.y), themeName: "Theme_Purples")
+        addChild(themePurples)
+        
+        let themeMetals = addThemeImage(at: CGPoint(x: themeOranges.position.x - 5, y: themePurples.position.y - 100), themeName: "Theme_Metals")
+        addChild(themeMetals)
+        
+        let themeOuterSpace = addThemeImage(at: CGPoint(x: themeMetals.position.x + 205, y: themeMetals.position.y), themeName: "Theme_OuterSpace")
         addChild(themeOuterSpace)
         
-        addThemeImage(at: CGPoint(x: leftSideMargin + 380, y: themesTitle.position.y - 300), themeName: "Theme_IceCream")
+        let themeIceCream = addThemeImage(at: CGPoint(x: themeOuterSpace.position.x + 225, y: themeMetals.position.y), themeName: "Theme_IceCream")
+        addChild(themeIceCream)
         
         
     }
