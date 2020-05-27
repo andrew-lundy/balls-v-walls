@@ -104,8 +104,6 @@ class OptionsScene: SKScene {
         themesTitle.size = titleSize
         themesTitle.position = CGPoint(x: leftSideMargin + 5, y: modeSpeedButton.position.y - 75)
         addChild(themesTitle)
-        
-       
     }
     
     func addThemeImage(at position: CGPoint, themeName: String) -> SKSpriteNode {

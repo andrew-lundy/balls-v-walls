@@ -33,12 +33,7 @@ class HomeScene: SKScene {
             print("HIGHSCORE NOT FOUND")
         }
         createMainMenu()
-        
-        
     }
- 
-    
-    
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

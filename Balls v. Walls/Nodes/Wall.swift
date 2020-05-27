@@ -12,7 +12,6 @@ import SpriteKit
 class Wall: SKNode {
 
     var colors = [UIColor.yellow, UIColor.red, UIColor.blue, UIColor.green]
-    var currentSections = [SKShapeNode]()
     
     var section: SKShapeNode!
     var xPosition: CGFloat!

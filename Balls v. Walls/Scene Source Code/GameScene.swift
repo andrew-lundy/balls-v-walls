@@ -40,7 +40,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var highScore: Int!
     
     var gameOver: SKLabelNode!
-    var ballPath: CGMutablePath!
     var playAgain: SKSpriteNode!
     var dimmer: SKSpriteNode!
     
@@ -63,11 +62,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         endingXPosition = frame.minX
         moveAction = SKAction.moveTo(x: endingXPosition, duration: 0.8)
-        
-//        ballPath = CGMutablePath()
-//        ballPath.addArc(center: CGPoint.zero, radius: 50, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
-//        ball = SKShapeNode(path: ballPath)
-        
         newBall = Ball()
         mainGround = Ground(frame: frame)
         
@@ -356,15 +350,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
     }
-        
-    var ballRotation: CGFloat!
+
     
     override func update(_ currentTime: TimeInterval) {
 //        if GlobalVariables.shared.gameState == GameState.antiGravity {
 //
 //        }
     }
-    
     
     
     // Custom function
@@ -377,11 +369,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 GlobalVariables.shared.gameState = GameState.antiGravity
                 SKAction.run {
                     SKAction.wait(forDuration: 1)
-                    
                 }
                 self.physicsWorld.gravity = CGVector(dx: 0, dy: 9.8)
             }
-            
             newBall.changeBallTexture()
         } else if node.name == "wall" {
             print("PLAYER HIT WALL")
@@ -404,9 +394,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ballCollided(with: nodeA)
         }
     }
-    
-    
-    
-    
-    
 }
