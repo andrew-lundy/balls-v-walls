@@ -78,7 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
-        
+    
         highScore = defaults.object(forKey: "HighScore") as? Int ?? 0
         GlobalVariables.shared.gameState = .playing
         createTextureBall()
@@ -130,26 +130,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
+    
     func createBall() {
-        ball.zPosition = -10
-        ball.fillColor = colors.randomElement() ?? UIColor.red
-        ball.strokeColor = ball.fillColor
-        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 50)
-        addChild(ball)
-        
         ball.physicsBody = SKPhysicsBody(circleOfRadius: 50)
-        ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
-        ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
-        ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
         ball.physicsBody?.restitution = 0.6
         ball.physicsBody?.isDynamic = true
-        
-        let activatePlayer = SKAction.run {
-            self.startWall()
-            self.createPlayingHUD()
-        }
-        run(activatePlayer)
+        ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
+        ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
+        // Set the collisionBitMask of the ball. This lets the ball collide with the ball and the wall.
+        ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
     }
+    
+    
+    
+    
+    
+    
+    
+//    ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
+//    ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
+//    ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
+//    ball.physicsBody?.restitution = 0.6
+//    ball.physicsBody?.isDynamic = true
+    
+//    func createBall() {
+//        ball.zPosition = -10
+//        ball.fillColor = colors.randomElement() ?? UIColor.red
+//        ball.strokeColor = ball.fillColor
+//        ball.position = CGPoint(x: frame.width / 6, y: frame.height + 50)
+//        addChild(ball)
+//
+//        ball.physicsBody = SKPhysicsBody(circleOfRadius: 50)
+//        ball.physicsBody?.categoryBitMask = CollisionTypes.ball.rawValue
+//        ball.physicsBody?.contactTestBitMask = CollisionTypes.wall.rawValue
+//        ball.physicsBody?.collisionBitMask = CollisionTypes.ground.rawValue | CollisionTypes.wall.rawValue
+//        ball.physicsBody?.restitution = 0.6
+//        ball.physicsBody?.isDynamic = true
+//
+//
+//        let activatePlayer = SKAction.run {
+//            self.startWall()
+//            self.createPlayingHUD()
+//        }
+//        run(activatePlayer)
+//    }
    
     func createMainGround() {
         mainGround.createGround(frame: frame)
@@ -351,6 +375,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
+    
     
     override func update(_ currentTime: TimeInterval) {
 //        if GlobalVariables.shared.gameState == GameState.antiGravity {
